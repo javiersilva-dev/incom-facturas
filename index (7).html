@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Control Facturas — INCOM</title>
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0f1117;
+    --bg2: #161b27;
+    --bg3: #1e2535;
+    --border: #2a3248;
+    --accent: #3b82f6;
+    --accent2: #60a5fa;
+    --green: #22c55e;
+    --yellow: #f59e0b;
+    --red: #ef4444;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #64748b;
+    --card: #161b27;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  
+  /* LAYOUT */
+  .app { display: flex; min-height: 100vh; }
+  .sidebar { width: 220px; background: var(--bg2); border-right: 1px solid var(--border); padding: 24px 0; position: fixed; height: 100vh; display: flex; flex-direction: column; z-index: 100; }
+  .main { margin-left: 220px; flex: 1; padding: 32px; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .logo { padding: 0 20px 24px; border-bottom: 1px solid var(--border); }
+  .logo-title { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: 0.5px; }
+  .logo-sub { font-size: 11px; color: var(--text3); margin-top: 2px; font-family: 'DM Mono', monospace; }
+  .nav { padding: 16px 0; flex: 1; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 20px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text2); transition: all 0.15s; border-left: 3px solid transparent; }
+  .nav-item:hover { color: var(--text); background: var(--bg3); }
+  .nav-item.active { color: var(--accent2); background: rgba(59,130,246,0.08); border-left-color: var(--accent); }
+  .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+
+  /* HEADER */
+  .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+  .page-title { font-size: 22px; font-weight: 700; }
+  .page-sub { font-size: 13px; color: var(--text3); margin-top: 2px; }
+
+  /* BOTONES */
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { background: #2563eb; }
+  .btn-secondary { background: var(--bg3); color: var(--text2); border: 1px solid var(--border); }
+  .btn-secondary:hover { color: var(--text); border-color: var(--accent); }
+  .btn-danger { background: rgba(239,68,68,0.1); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+  .btn-success { background: rgba(34,197,94,0.1); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+  .btn-sm { padding: 5px 10px; font-size: 12px; }
+
+  /* CARDS KPI */
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+  .kpi-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .kpi-label { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; }
+  .kpi-value { font-size: 26px; font-weight: 700; margin-top: 6px; font-family: 'DM Mono', monospace; }
+  .kpi-sub { font-size: 12px; color: var(--text3); margin-top: 4px; }
+  .kpi-red .kpi-value { color: var(--red); }
+  .kpi-yellow .kpi-value { color: var(--yellow); }
+  .kpi-green .kpi-value { color: var(--green); }
+  .kpi-blue .kpi-value { color: var(--accent2); }
+
+  /* TABLA */
+  .table-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .table-toolbar { display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+  .search-box { flex: 1; min-width: 200px; display: flex; align-items: center; gap: 8px; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; }
+  .search-box input { background: none; border: none; outline: none; color: var(--text); font-size: 13px; font-family: 'DM Sans', sans-serif; width: 100%; }
+  .search-box input::placeholder { color: var(--text3); }
+  select.filter { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; color: var(--text2); font-size: 13px; font-family: 'DM Sans', sans-serif; outline: none; cursor: pointer; }
+  select.filter:focus { border-color: var(--accent); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th { padding: 12px 16px; text-align: left; font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.7px; border-bottom: 1px solid var(--border); background: var(--bg2); white-space: nowrap; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; cursor: pointer; }
+  tbody tr:hover { background: var(--bg3); }
+  tbody tr:last-child { border-bottom: none; }
+  td { padding: 12px 16px; color: var(--text2); vertical-align: middle; }
+  td.mono { font-family: 'DM Mono', monospace; font-size: 12px; }
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--text3); }
+  .empty-icon { font-size: 40px; margin-bottom: 12px; }
+
+  /* BADGES */
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+  .badge-red { background: rgba(239,68,68,0.12); color: var(--red); }
+  .badge-yellow { background: rgba(245,158,11,0.12); color: var(--yellow); }
+  .badge-green { background: rgba(34,197,94,0.12); color: var(--green); }
+  .badge-blue { background: rgba(59,130,246,0.12); color: var(--accent2); }
+  .badge-gray { background: rgba(100,116,139,0.12); color: var(--text3); }
+
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
+  .modal { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 780px; max-height: 90vh; overflow-y: auto; }
+  .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--bg2); z-index: 1; }
+  .modal-title { font-size: 16px; font-weight: 700; }
+  .modal-body { padding: 24px; }
+  .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
+  .close-btn { background: none; border: none; color: var(--text3); font-size: 20px; cursor: pointer; padding: 4px 8px; border-radius: 6px; }
+  .close-btn:hover { background: var(--bg3); color: var(--text); }
+
+  /* FORM */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: 1/-1; }
+  label { font-size: 12px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; }
+  input, select, textarea { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; color: var(--text); font-size: 13px; font-family: 'DM Sans', sans-serif; outline: none; transition: border 0.15s; width: 100%; }
+  input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+  input::placeholder { color: var(--text3); }
+  .section-title { font-size: 12px; font-weight: 700; color: var(--accent2); text-transform: uppercase; letter-spacing: 1px; padding-bottom: 10px; border-bottom: 1px solid var(--border); margin-bottom: 4px; grid-column: 1/-1; }
+  .calculated { background: rgba(59,130,246,0.05); border-color: rgba(59,130,246,0.3); color: var(--accent2); }
+
+  /* RESUMEN CARDS */
+  .resumen-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+  .resumen-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .resumen-card h3 { font-size: 13px; font-weight: 600; color: var(--text2); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .resumen-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border); }
+  .resumen-row:last-child { border-bottom: none; }
+  .resumen-label { font-size: 12px; color: var(--text3); }
+  .resumen-val { font-size: 13px; font-weight: 600; font-family: 'DM Mono', monospace; }
+
+  /* LOADER */
+  .loader { display: flex; align-items: center; justify-content: center; padding: 60px; gap: 12px; color: var(--text3); }
+  .spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ALERT */
+  .alert { padding: 12px 16px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; }
+  .alert-red { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; }
+  .alert-green { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); color: #86efac; }
+
+  /* ALERTAS VENCIMIENTO */
+  .alertas-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+  .alerta-item { display: flex; align-items: center; gap: 12px; background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.2); border-radius: 10px; padding: 12px 16px; }
+  .alerta-item.rojo { background: rgba(239,68,68,0.06); border-color: rgba(239,68,68,0.2); }
+  .alerta-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--yellow); flex-shrink: 0; }
+  .alerta-dot.rojo { background: var(--red); }
+  .alerta-info { flex: 1; }
+  .alerta-proveedor { font-size: 13px; font-weight: 600; color: var(--text); }
+  .alerta-detalle { font-size: 12px; color: var(--text3); margin-top: 2px; }
+  .alerta-monto { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 600; color: var(--yellow); }
+  .alerta-monto.rojo { color: var(--red); }
+
+  .tab-bar { display: flex; gap: 4px; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 4px; margin-bottom: 20px; width: fit-content; }
+  .tab { padding: 7px 18px; border-radius: 7px; font-size: 13px; font-weight: 500; cursor: pointer; color: var(--text3); transition: all 0.15s; }
+  .tab.active { background: var(--accent); color: white; }
+
+  .pagination { display: flex; align-items: center; gap: 8px; padding: 16px 20px; justify-content: flex-end; border-top: 1px solid var(--border); }
+  .pagination span { font-size: 13px; color: var(--text3); }
+
+  @media (max-width: 900px) {
+    .kpi-grid { grid-template-columns: 1fr 1fr; }
+    .resumen-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyORdKb03w9pyEpuja-3zfYyllZn7bc9pAQwA3IZnUhWYXiGIqYXSJz-ESTIGYP1I3DFw/exec";
+
+const ESTADOS = ["Pendiente","Pagado","Vencida","Anulada"];
+const CONDICION_PAGO = ["5 días","15 días","30 días","45 días","60 días","Contado"];
+const MEDIO_PAGO = ["Transferencia","Efectivo","Tarjeta de Crédito","Caja Chica"];
+const TIPO_DOC = ["Factura","Boleta","Nota de Crédito","Nota de Débito","Liquidación"];
+const TIPO_COMPRA = ["Bien","Servicio","Combustible","Repuesto","Neumático","Otro"];
+
+function fmt(n) {
+  if (!n && n !== 0) return "—";
+  return "$" + Number(n).toLocaleString("es-CL");
+}
+function fmtDate(d) {
+  if (!d) return "—";
+  if (typeof d === "string" && d.includes("/")) return d;
+  const dt = new Date(d);
+  if (isNaN(dt)) return d;
+  return dt.toLocaleDateString("es-CL");
+}
+function diasVence(venc) {
+  if (!venc) return null;
+  const hoy = new Date(); hoy.setHours(0,0,0,0);
+  let v;
+  if (typeof venc === "string" && venc.includes("/")) {
+    const [d,m,y] = venc.split("/"); v = new Date(`${y}-${m}-${d}`);
+  } else { v = new Date(venc); }
+  if (isNaN(v)) return null;
+  return Math.round((v - hoy) / 86400000);
+}
+function estadoBadge(f) {
+  const dias = diasVence(f["Vencimiento"] || f["vencimiento"]);
+  const estado = f["Estado"] || f["estado"] || "";
+  if (estado === "Pagado") return <span className="badge badge-green">✓ Pagada</span>;
+  if (estado === "Anulada") return <span className="badge badge-gray">Anulada</span>;
+  if (dias !== null && dias < 0) return <span className="badge badge-red">⚠ Vencida</span>;
+  if (dias !== null && dias <= 7) return <span className="badge badge-yellow">⏱ {dias}d</span>;
+  return <span className="badge badge-blue">Pendiente</span>;
+}
+
+// --- FORM ---
+function FacturaForm({ inicial, onSave, onClose, loading }) {
+  const hoy = new Date().toISOString().split("T")[0];
+  const [f, setF] = React.useState(inicial || {
+    "Tipo Doc": "Factura", "Tipo Compra": "", "RUT Proveedor": "", "Razon Social": "",
+    "Factura": "", "Fecha Emision": hoy, "Con. de Pago": "30 días",
+    "Vencimiento": "", "Estado": "Pendiente",
+    "Monto Exento": "", "Monto Neto": "", "Monto IVA Recuperable": "", "Monto Total": "",
+    "Fecha Pago": "", "Forma Pago": "", "Centro Gasto": "", "Patente": "",
+    "N° Solicitud": "", "N° OC": "", "Area/Centro costo": "", "Subdivision/Actividad": "",
+    "Descripcion": "", "SUB CECO": "", "Solicitante": "", "Usuario": "",
+    "asociado_equipo": false
+  });
+
+  const [err, setErr] = React.useState("");
+
+  function set(k, v) {
+    setF(prev => {
+      const next = { ...prev, [k]: v };
+      // Calcular vencimiento
+      if ((k === "Fecha Emision" || k === "Con. de Pago") && next["Fecha Emision"]) {
+        const dias = parseInt(next["Con. de Pago"]) || 0;
+        if (dias > 0) {
+          const d = new Date(next["Fecha Emision"]);
+          d.setDate(d.getDate() + dias);
+          next["Vencimiento"] = d.toISOString().split("T")[0];
+          next["Dias Vencimiento"] = dias;
+        }
+      }
+      // Calcular IVA y Total
+      if (k === "Monto Neto") {
+        const neto = parseFloat(v) || 0;
+        const iva = Math.round(neto * 0.19);
+        const exento = parseFloat(next["Monto Exento"]) || 0;
+        next["Monto IVA Recuperable"] = iva;
+        next["Monto Total"] = neto + iva + exento;
+      }
+      if (k === "Monto Exento") {
+        const neto = parseFloat(next["Monto Neto"]) || 0;
+        const iva = Math.round(neto * 0.19);
+        const exento = parseFloat(v) || 0;
+        next["Monto Total"] = neto + iva + exento;
+      }
+      return next;
+    });
+  }
+
+  function validate() {
+    if (!f["RUT Proveedor"]) return "RUT Proveedor es requerido";
+    if (!f["Razon Social"]) return "Razón Social es requerida";
+    if (!f["Factura"]) return "N° Factura es requerido";
+    if (!f["Monto Neto"] && !f["Monto Exento"]) return "Ingrese al menos Monto Neto o Monto Exento";
+    return "";
+  }
+
+  function handleSave() {
+    const e = validate();
+    if (e) { setErr(e); return; }
+    setErr("");
+    onSave(f);
+  }
+
+  return (
+    <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className="modal">
+        <div className="modal-header">
+          <div className="modal-title">{inicial ? "Editar Factura" : "Nueva Factura"}</div>
+          <button className="close-btn" onClick={onClose}>✕</button>
+        </div>
+        <div className="modal-body">
+          {err && <div className="alert alert-red">⚠ {err}</div>}
+          <div className="form-grid">
+            <div className="section-title">📄 Datos del Documento</div>
+            <div className="form-group">
+              <label>Tipo Documento</label>
+              <select value={f["Tipo Doc"]} onChange={e=>set("Tipo Doc",e.target.value)}>
+                {TIPO_DOC.map(t=><option key={t}>{t}</option>)}
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Tipo Compra</label>
+              <select value={f["Tipo Compra"]} onChange={e=>set("Tipo Compra",e.target.value)}>
+                <option value="">Seleccionar...</option>
+                {TIPO_COMPRA.map(t=><option key={t}>{t}</option>)}
+              </select>
+            </div>
+            <div className="form-group">
+              <label>RUT Proveedor *</label>
+              <input placeholder="12.345.678-9" value={f["RUT Proveedor"]} onChange={e=>set("RUT Proveedor",e.target.value)}/>
+            </div>
+            <div className="form-group">
+              <label>Razón Social *</label>
+              <input placeholder="Nombre empresa" value={f["Razon Social"]} onChange={e=>set("Razon Social",e.target.value)}/>
+            </div>
+            <div className="form-group">
+              <label>N° Factura *</label>
+              <input placeholder="000000" value={f["Factura"]} onChange={e=>set("Factura",e.target.value)}/>
+            </div>
+            <div className="form-group">
+              <label>Fecha Emisión</label>
+              <input type="date" value={f["Fecha Emision"]} onChange={e=>set("Fecha Emision",e.target.value)}/>
+            </div>
+            <div className="form-group">
+              <label>Condición de Pago</label>
+              <select value={f["Con. de Pago"]} onChange={e=>set("Con. de Pago",e.target.value)}>
+                {CONDICION_PAGO.map(t=><option key={t}>{t}</option>)}
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Vencimiento (calculado)</label>
+              <input className="calculated" type="date" value={f["Vencimiento"]} onChange={e=>set("Vencimiento",e.target.value)}/>
+            </div>
+
+            <div className="section-title">💰 Montos</div>
+            <div className="form-group">
+              <label>Monto Exento</label>
+              <input type="number" placeholder="0" value={f["Monto Exento"]} onChange={e=>set("Monto Exento",e.target.value)}/>
+            </div>
+            <div className="form-group">
+              <label>Monto Neto *</label>
+              <input type="number" placeholder="0" value={f["Monto Neto"]} onChange={e=>set("Monto Neto",e.target.value)}/>
+            </div>
+            <div className="form-group">
+              <label>IVA Recuperable (19% auto)</label>
+              <input className="calculated" readOnly value={f["Monto IVA Recuperable"]}/>
+            </div>
+            <div className="form-group">
+              <label>Monto Total (auto)</label>
+              <input className="calculated" readOnly value={f["Monto Total"]}/>
+            </div>
+
+            <div className="section-title">✅ Pago</div>
+            <div className="form-group">
+              <label>Estado</label>
+              <select value={f["Estado"]} onChange={e=>set("Estado",e.target.value)}>
+                {ESTADOS.map(t=><option key={t}>{t}</option>)}
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Medio de Pago</label>
+              <select value={f["Forma Pago"]} onChange={e=>set("Forma Pago",e.target.value)}>
+                <option value="">Seleccionar...</option>
+                {MEDIO_PAGO.map(t=><option key={t}>{t}</option>)}
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Fecha Pago</label>
+              <input type="date" value={f["Fecha Pago"]} onChange={e=>set("Fecha Pago",e.target.value)}/>
+            </div>
+            <div className="form-group">
+              <label>Centro de Gasto</label>
+              <input placeholder="Centro" value={f["Centro Gasto"]} onChange={e=>set("Centro Gasto",e.target.value)}/>
+            </div>
+
+            <div className="section-title">🚛 Clasificación</div>
+            <div className="form-group full" style={{flexDirection:"row",alignItems:"center",gap:10}}>
+              <input type="checkbox" id="eq" checked={f["asociado_equipo"]} onChange={e=>set("asociado_equipo",e.target.checked)} style={{width:16,height:16}}/>
+              <label htmlFor="eq" style={{textTransform:"none",fontSize:13,cursor:"pointer"}}>¿Gasto asociado a un equipo/vehículo?</label>
+            </div>
+            {f["asociado_equipo"] && (
+              <div className="form-group">
+                <label>Patente</label>
+                <input placeholder="XXXX-XX" value={f["Patente"]} onChange={e=>set("Patente",e.target.value)}/>
+              </div>
+            )}
+            <div className="form-group">
+              <label>N° OC (Opcional)</label>
+              <input placeholder="OC-0000" value={f["N° OC"]} onChange={e=>set("N° OC",e.target.value)}/>
+            </div>
+            <div className="form-group">
+              <label>N° Solicitud</label>
+              <input value={f["N° Solicitud"]} onChange={e=>set("N° Solicitud",e.target.value)}/>
+            </div>
+            <div className="form-group">
+              <label>Área/Centro Costo</label>
+              <input value={f["Area/Centro costo"]} onChange={e=>set("Area/Centro costo",e.target.value)}/>
+            </div>
+            <div className="form-group">
+              <label>SUB CECO</label>
+              <input value={f["SUB CECO"]} onChange={e=>set("SUB CECO",e.target.value)}/>
+            </div>
+            <div className="form-group">
+              <label>Subdivisión/Actividad</label>
+              <input value={f["Subdivision/Actividad"]} onChange={e=>set("Subdivision/Actividad",e.target.value)}/>
+            </div>
+            <div className="form-group">
+              <label>Solicitante</label>
+              <input value={f["Solicitante"]} onChange={e=>set("Solicitante",e.target.value)}/>
+            </div>
+            <div className="form-group">
+              <label>Usuario</label>
+              <select value={f["Usuario"]} onChange={e=>set("Usuario",e.target.value)}>
+                <option value="">Seleccionar...</option>
+                <option>Javier</option>
+                <option>Andrea</option>
+              </select>
+            </div>
+            <div className="form-group full">
+              <label>Descripción</label>
+              <textarea rows={2} value={f["Descripcion"]} onChange={e=>set("Descripcion",e.target.value)} style={{resize:"vertical"}}/>
+            </div>
+          </div>
+        </div>
+        <div className="modal-footer">
+          <button className="btn btn-secondary" onClick={onClose}>Cancelar</button>
+          <button className="btn btn-primary" onClick={handleSave} disabled={loading}>
+            {loading ? "Guardando..." : "💾 Guardar"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// --- DASHBOARD ---
+function Dashboard({ facturas }) {
+  const hoy = new Date(); hoy.setHours(0,0,0,0);
+  const pendientes = facturas.filter(f => (f["Estado"]||"") !== "Pagado" && (f["Estado"]||"") !== "Anulada");
+  const vencidas = pendientes.filter(f => { const d = diasVence(f["Vencimiento"]); return d !== null && d < 0; });
+  const por7 = pendientes.filter(f => { const d = diasVence(f["Vencimiento"]); return d !== null && d >= 0 && d <= 7; });
+  const pagadas = facturas.filter(f => f["Estado"] === "Pagado");
+  const totalPendiente = pendientes.reduce((a,f)=>a+(parseFloat(f["Monto Total"])||0),0);
+  const totalPagado = pagadas.reduce((a,f)=>a+(parseFloat(f["Monto Total"])||0),0);
+
+  // Por proveedor top 5
+  const porProv = {};
+  pendientes.forEach(f => {
+    const k = f["Razon Social"] || f["RUT Proveedor"] || "Sin nombre";
+    porProv[k] = (porProv[k]||0) + (parseFloat(f["Monto Total"])||0);
+  });
+  const topProv = Object.entries(porProv).sort((a,b)=>b[1]-a[1]).slice(0,5);
+
+  // Por CECO
+  const porCeco = {};
+  facturas.forEach(f => {
+    const k = f["Area/Centro costo"] || "Sin CECO";
+    porCeco[k] = (porCeco[k]||0) + (parseFloat(f["Monto Total"])||0);
+  });
+  const topCeco = Object.entries(porCeco).sort((a,b)=>b[1]-a[1]).slice(0,5);
+
+  const alertas = [...vencidas.map(f=>({...f,_tipo:"vencida"})), ...por7.map(f=>({...f,_tipo:"proxima"}))].slice(0,8);
+
+  return (
+    <div>
+      <div className="kpi-grid">
+        <div className="kpi-card kpi-blue">
+          <div className="kpi-label">Total Pendiente</div>
+          <div className="kpi-value">{fmt(totalPendiente)}</div>
+          <div className="kpi-sub">{pendientes.length} facturas</div>
+        </div>
+        <div className="kpi-card kpi-red">
+          <div className="kpi-label">Vencidas</div>
+          <div className="kpi-value">{vencidas.length}</div>
+          <div className="kpi-sub">{fmt(vencidas.reduce((a,f)=>a+(parseFloat(f["Monto Total"])||0),0))}</div>
+        </div>
+        <div className="kpi-card kpi-yellow">
+          <div className="kpi-label">Vencen en 7 días</div>
+          <div className="kpi-value">{por7.length}</div>
+          <div className="kpi-sub">{fmt(por7.reduce((a,f)=>a+(parseFloat(f["Monto Total"])||0),0))}</div>
+        </div>
+        <div className="kpi-card kpi-green">
+          <div className="kpi-label">Total Pagado</div>
+          <div className="kpi-value">{fmt(totalPagado)}</div>
+          <div className="kpi-sub">{pagadas.length} facturas</div>
+        </div>
+      </div>
+
+      {alertas.length > 0 && (
+        <div style={{marginBottom:24}}>
+          <div style={{fontSize:13,fontWeight:700,color:"var(--text2)",marginBottom:10,display:"flex",alignItems:"center",gap:8}}>
+            🔔 Alertas de Vencimiento
+          </div>
+          <div className="alertas-list">
+            {alertas.map((f,i)=>{
+              const dias = diasVence(f["Vencimiento"]);
+              const esRojo = f._tipo==="vencida";
+              return (
+                <div key={i} className={`alerta-item${esRojo?" rojo":""}`}>
+                  <div className={`alerta-dot${esRojo?" rojo":""}`}/>
+                  <div className="alerta-info">
+                    <div className="alerta-proveedor">{f["Razon Social"]||f["RUT Proveedor"]}</div>
+                    <div className="alerta-detalle">Factura {f["Factura"]} · Vence {fmtDate(f["Vencimiento"])} · {esRojo?`Vencida hace ${Math.abs(dias)} días`:`Vence en ${dias} días`}</div>
+                  </div>
+                  <div className={`alerta-monto${esRojo?" rojo":""}`}>{fmt(f["Monto Total"])}</div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      <div className="resumen-grid">
+        <div className="resumen-card">
+          <h3>🏢 Top Proveedores (pendiente)</h3>
+          {topProv.map(([k,v])=>(
+            <div key={k} className="resumen-row">
+              <span className="resumen-label" style={{maxWidth:150,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{k}</span>
+              <span className="resumen-val" style={{color:"var(--accent2)"}}>{fmt(v)}</span>
+            </div>
+          ))}
+          {topProv.length===0&&<div style={{color:"var(--text3)",fontSize:13}}>Sin datos</div>}
+        </div>
+        <div className="resumen-card">
+          <h3>📊 Top CECO (total)</h3>
+          {topCeco.map(([k,v])=>(
+            <div key={k} className="resumen-row">
+              <span className="resumen-label">{k}</span>
+              <span className="resumen-val" style={{color:"var(--green)"}}>{fmt(v)}</span>
+            </div>
+          ))}
+          {topCeco.length===0&&<div style={{color:"var(--text3)",fontSize:13}}>Sin datos</div>}
+        </div>
+        <div className="resumen-card">
+          <h3>💳 Por Medio de Pago</h3>
+          {["Transferencia","Efectivo","Tarjeta de Crédito","Caja Chica"].map(mp=>{
+            const total = pagadas.filter(f=>f["Forma Pago"]===mp).reduce((a,f)=>a+(parseFloat(f["Monto Total"])||0),0);
+            const cnt = pagadas.filter(f=>f["Forma Pago"]===mp).length;
+            if(!cnt) return null;
+            return (
+              <div key={mp} className="resumen-row">
+                <span className="resumen-label">{mp}</span>
+                <span className="resumen-val">{fmt(total)}</span>
+              </div>
+            );
+          })}
+          {pagadas.length===0&&<div style={{color:"var(--text3)",fontSize:13}}>Sin facturas pagadas</div>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// --- EXPORTAR EXCEL ---
+function exportarExcel(datos, nombre) {
+  const headers = ["Nro","Tipo Doc","Tipo Compra","RUT Proveedor","Razon Social","Factura",
+    "Fecha Emision","Con. de Pago","Vencimiento","Dias Vencimiento","Estado",
+    "Monto Exento","Monto Neto","Monto IVA Recuperable","Monto Total",
+    "Fecha Pago","Forma Pago","Centro Gasto","Patente","N° Solicitud","N° OC",
+    "Area/Centro costo","Subdivision/Actividad","Descripcion","SUB CECO","Solicitante","Usuario"];
+  const csvRows = [headers.join(";")];
+  datos.forEach(f => {
+    const row = headers.map(h => {
+      const val = f[h] !== undefined ? f[h] : "";
+      return `"${String(val).replace(/"/g,'""')}"`;
+    });
+    csvRows.push(row.join(";"));
+  });
+  const BOM = "\uFEFF";
+  const blob = new Blob([BOM + csvRows.join("\n")], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = nombre || "facturas_incom.csv"; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// --- MODAL PAGO MULTIPLE ---
+function ModalPagoMultiple({ seleccionadas, onConfirmar, onClose, saving }) {
+  const hoy = new Date().toISOString().split("T")[0];
+  const [fechaPago, setFechaPago] = React.useState(hoy);
+  const [medioPago, setMedioPago] = React.useState("Transferencia");
+  const [nTransfer, setNTransfer] = React.useState("");
+  const [comprobante, setComprobante] = React.useState(null);
+  const [nombreArchivo, setNombreArchivo] = React.useState("");
+  const [subiendo, setSubiendo] = React.useState(false);
+
+  const total = seleccionadas.reduce((a,f)=>a+(parseFloat(f["Monto Total"])||0),0);
+
+  function handleFile(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    setNombreArchivo(file.name);
+    const reader = new FileReader();
+    reader.onload = ev => setComprobante({ base64: ev.target.result.split(",")[1], nombre: file.name, tipo: file.type });
+    reader.readAsDataURL(file);
+  }
+
+  async function handleConfirmar() {
+    setSubiendo(true);
+    await onConfirmar({ fechaPago, medioPago, nTransfer, comprobante });
+    setSubiendo(false);
+  }
+
+  return (
+    <div className="modal-overlay" onClick={e=>e.target===e.currentTarget&&onClose()}>
+      <div className="modal" style={{maxWidth:560}}>
+        <div className="modal-header">
+          <div className="modal-title">💳 Registrar Pago</div>
+          <button className="close-btn" onClick={onClose}>✕</button>
+        </div>
+        <div className="modal-body">
+          {/* Facturas seleccionadas */}
+          <div style={{background:"var(--bg3)",borderRadius:10,padding:14,marginBottom:20}}>
+            <div style={{fontSize:12,fontWeight:700,color:"var(--text3)",marginBottom:10,textTransform:"uppercase",letterSpacing:"0.5px"}}>
+              {seleccionadas.length} Facturas seleccionadas
+            </div>
+            <div style={{maxHeight:150,overflowY:"auto",display:"flex",flexDirection:"column",gap:6}}>
+              {seleccionadas.map((f,i)=>(
+                <div key={i} style={{display:"flex",justifyContent:"space-between",fontSize:13}}>
+                  <span style={{color:"var(--text2)"}}>{f["Razon Social"]||"—"} · Fact. {f["Factura"]}</span>
+                  <span style={{fontFamily:"'DM Mono',monospace",color:"var(--accent2)",fontWeight:600}}>{fmt(f["Monto Total"])}</span>
+                </div>
+              ))}
+            </div>
+            <div style={{borderTop:"1px solid var(--border)",marginTop:10,paddingTop:10,display:"flex",justifyContent:"space-between"}}>
+              <span style={{fontWeight:700,color:"var(--text)"}}>TOTAL</span>
+              <span style={{fontFamily:"'DM Mono',monospace",fontWeight:700,fontSize:16,color:"var(--green)"}}>{fmt(total)}</span>
+            </div>
+          </div>
+
+          <div className="form-grid">
+            <div className="form-group">
+              <label>Fecha de Pago</label>
+              <input type="date" value={fechaPago} onChange={e=>setFechaPago(e.target.value)}/>
+            </div>
+            <div className="form-group">
+              <label>Medio de Pago</label>
+              <select value={medioPago} onChange={e=>setMedioPago(e.target.value)}>
+                {MEDIO_PAGO.map(m=><option key={m}>{m}</option>)}
+              </select>
+            </div>
+            {medioPago === "Transferencia" && (
+              <div className="form-group full">
+                <label>N° Transferencia</label>
+                <input placeholder="Número de operación" value={nTransfer} onChange={e=>setNTransfer(e.target.value)}/>
+              </div>
+            )}
+            <div className="form-group full">
+              <label>Comprobante (imagen o PDF)</label>
+              <div style={{border:"2px dashed var(--border)",borderRadius:8,padding:20,textAlign:"center",cursor:"pointer",transition:"border 0.15s"}}
+                onClick={()=>document.getElementById("fileInput").click()}
+                onDragOver={e=>{e.preventDefault();e.currentTarget.style.borderColor="var(--accent)"}}
+                onDragLeave={e=>{e.currentTarget.style.borderColor="var(--border)"}}
+                onDrop={e=>{e.preventDefault();const f=e.dataTransfer.files[0];if(f){setNombreArchivo(f.name);const r=new FileReader();r.onload=ev=>setComprobante({base64:ev.target.result.split(",")[1],nombre:f.name,tipo:f.type});r.readAsDataURL(f);}}}>
+                <input id="fileInput" type="file" accept="image/*,.pdf" style={{display:"none"}} onChange={handleFile}/>
+                {nombreArchivo ? (
+                  <div>
+                    <div style={{fontSize:24,marginBottom:6}}>📎</div>
+                    <div style={{fontSize:13,color:"var(--green)",fontWeight:600}}>{nombreArchivo}</div>
+                    <div style={{fontSize:11,color:"var(--text3)",marginTop:4}}>Click para cambiar</div>
+                  </div>
+                ) : (
+                  <div>
+                    <div style={{fontSize:24,marginBottom:6}}>☁️</div>
+                    <div style={{fontSize:13,color:"var(--text3)"}}>Arrastra o click para subir comprobante</div>
+                    <div style={{fontSize:11,color:"var(--text3)",marginTop:4}}>JPG, PNG, PDF</div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="modal-footer">
+          <button className="btn btn-secondary" onClick={onClose}>Cancelar</button>
+          <button className="btn btn-primary" onClick={handleConfirmar} disabled={saving||subiendo}>
+            {saving||subiendo ? "Procesando..." : `✓ Confirmar Pago ${fmt(total)}`}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// --- TABLA FACTURAS ---
+function TablaFacturas({ facturas, onEdit, onPagar, onPagarMultiple, onDelete }) {
+  const [q, setQ] = React.useState("");
+  const [filtroEstado, setFiltroEstado] = React.useState("");
+  const [filtroPago, setFiltroPago] = React.useState("");
+  const [filtroCeco, setFiltroCeco] = React.useState("");
+  const [filtroSubdiv, setFiltroSubdiv] = React.useState("");
+  const [pag, setPag] = React.useState(1);
+  const [seleccionadas, setSeleccionadas] = React.useState([]);
+  const [showPagoModal, setShowPagoModal] = React.useState(false);
+  const PER_PAGE = 15;
+
+  const cecos = [...new Set(facturas.map(f=>(f["Área/Centro costo"]||f["Area/Centro costo"]||"")).filter(Boolean))].sort();
+  const subdivs = [...new Set(facturas.map(f=>(f["Subdivisión/Actividad"]||f["Subdivision/Actividad"]||"")).filter(Boolean))].sort();
+
+  const filtered = facturas.filter(f => {
+    const txt = q.toLowerCase();
+    const match = !txt || 
+      (f["Razon Social"]||"").toLowerCase().includes(txt) ||
+      (f["RUT Proveedor"]||"").toLowerCase().includes(txt) ||
+      String(f["Factura"]||"").includes(txt) ||
+      (f["Descripcion"]||"").toLowerCase().includes(txt);
+    const matchEstado = !filtroEstado || (f["Estado"]||"") === filtroEstado;
+    const matchPago = !filtroPago || (f["Forma Pago"]||"") === filtroPago;
+    const matchCeco = !filtroCeco || (f["Área/Centro costo"]||f["Area/Centro costo"]||"") === filtroCeco;
+    const matchSubdiv = !filtroSubdiv || (f["Subdivisión/Actividad"]||f["Subdivision/Actividad"]||"") === filtroSubdiv;
+    return match && matchEstado && matchPago && matchCeco && matchSubdiv;
+  });
+
+  const total = filtered.length;
+  const pages = Math.ceil(total / PER_PAGE);
+  const slice = filtered.slice((pag-1)*PER_PAGE, pag*PER_PAGE);
+
+  React.useEffect(()=>setPag(1),[q,filtroEstado,filtroPago,filtroCeco,filtroSubdiv]);
+
+  const handleExport = () => {
+    const fecha = new Date().toLocaleDateString("es-CL").replace(/\//g,"-");
+    exportarExcel(filtered, `facturas_incom_${fecha}.csv`);
+  };
+
+  const hayFiltros = q||filtroEstado||filtroPago||filtroCeco||filtroSubdiv;
+
+  function toggleSeleccion(f) {
+    setSeleccionadas(prev => {
+      const existe = prev.find(x=>x._rowIndex===f._rowIndex);
+      return existe ? prev.filter(x=>x._rowIndex!==f._rowIndex) : [...prev, f];
+    });
+  }
+
+  function toggleTodos() {
+    const pendientes = slice.filter(f=>f["Estado"]!=="Pagado");
+    if (seleccionadas.length === pendientes.length) setSeleccionadas([]);
+    else setSeleccionadas(pendientes);
+  }
+
+  const estaSeleccionada = f => seleccionadas.some(x=>x._rowIndex===f._rowIndex);
+  const totalSeleccionado = seleccionadas.reduce((a,f)=>a+(parseFloat(f["Monto Total"])||0),0);
+
+  return (
+    <div className="table-wrap">
+      <div className="table-toolbar" style={{flexWrap:"wrap",gap:8}}>
+        <div className="search-box" style={{minWidth:200}}>
+          <span style={{color:"var(--text3)"}}>🔍</span>
+          <input placeholder="Buscar proveedor, RUT, N° factura..." value={q} onChange={e=>setQ(e.target.value)}/>
+        </div>
+        <select className="filter" value={filtroEstado} onChange={e=>setFiltroEstado(e.target.value)}>
+          <option value="">Todos los estados</option>
+          {ESTADOS.map(s=><option key={s}>{s}</option>)}
+        </select>
+        <select className="filter" value={filtroPago} onChange={e=>setFiltroPago(e.target.value)}>
+          <option value="">Todos los medios</option>
+          {MEDIO_PAGO.map(s=><option key={s}>{s}</option>)}
+        </select>
+        <select className="filter" value={filtroCeco} onChange={e=>setFiltroCeco(e.target.value)}>
+          <option value="">Todos los CECO</option>
+          {cecos.map(s=><option key={s}>{s}</option>)}
+        </select>
+        <select className="filter" value={filtroSubdiv} onChange={e=>setFiltroSubdiv(e.target.value)}>
+          <option value="">Todas las subdivisiones</option>
+          {subdivs.map(s=><option key={s}>{s}</option>)}
+        </select>
+        <div style={{marginLeft:"auto",display:"flex",alignItems:"center",gap:10}}>
+          {hayFiltros && (
+            <button className="btn btn-secondary btn-sm" onClick={()=>{setQ("");setFiltroEstado("");setFiltroPago("");setFiltroCeco("");setFiltroSubdiv("");}}>
+              ✕ Limpiar filtros
+            </button>
+          )}
+          <span style={{fontSize:12,color:"var(--text3)"}}>{total} registros</span>
+          <button className="btn btn-success btn-sm" onClick={handleExport}>📥 Exportar Excel</button>
+        </div>
+      </div>
+      {/* BARRA PAGO MULTIPLE */}
+      {seleccionadas.length > 0 && (
+        <div style={{background:"var(--accent)",padding:"12px 20px",display:"flex",alignItems:"center",gap:16,flexWrap:"wrap"}}>
+          <span style={{fontSize:13,fontWeight:700,color:"white"}}>{seleccionadas.length} facturas seleccionadas</span>
+          <span style={{fontSize:13,fontFamily:"'DM Mono',monospace",color:"rgba(255,255,255,0.9)",fontWeight:600}}>{fmt(totalSeleccionado)}</span>
+          <button className="btn" style={{background:"white",color:"var(--accent)",marginLeft:"auto"}} onClick={()=>setShowPagoModal(true)}>
+            💳 Registrar Pago
+          </button>
+          <button className="btn" style={{background:"rgba(255,255,255,0.2)",color:"white",border:"1px solid rgba(255,255,255,0.3)"}} onClick={()=>setSeleccionadas([])}>
+            ✕ Limpiar
+          </button>
+        </div>
+      )}
+      <div style={{overflowX:"auto"}}>
+        <table>
+          <thead>
+            <tr>
+              <th style={{width:50,textAlign:"center"}}>☑</th>
+              <th>N°</th>
+              <th>Tipo</th>
+              <th>Proveedor</th>
+              <th>Factura</th>
+              <th>Emisión</th>
+              <th>Vencimiento</th>
+              <th>Estado</th>
+              <th>Monto Total</th>
+              <th>Medio Pago</th>
+              <th>Patente</th>
+              <th>N° OC</th>
+              <th>CECO</th>
+              <th>Usuario</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {slice.length === 0 && (
+              <tr><td colSpan={15}>
+                <div className="empty-state">
+                  <div className="empty-icon">📄</div>
+                  <div>No se encontraron facturas</div>
+                </div>
+              </td></tr>
+            )}
+            {slice.map((f,i)=>(
+              <tr key={i} style={{background: estaSeleccionada(f)?"rgba(59,130,246,0.08)":""}}>
+                <td style={{textAlign:"center"}}>
+                  {f["Estado"]!=="Pagado" && (
+                    <input type="checkbox" checked={estaSeleccionada(f)} onChange={()=>toggleSeleccion(f)} 
+                      style={{cursor:"pointer",width:18,height:18,accentColor:"var(--accent)"}}/>
+                  )}
+                </td>
+                <td className="mono" style={{color:"var(--text3)"}}>{f["Nro"]||"—"}</td>
+                <td><span className="badge badge-gray">{f["Tipo Doc"]||"—"}</span></td>
+                <td style={{maxWidth:160}}>
+                  <div style={{fontWeight:600,color:"var(--text)",fontSize:13,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{f["Razon Social"]||"—"}</div>
+                  <div style={{fontSize:11,color:"var(--text3)",fontFamily:"'DM Mono',monospace"}}>{f["RUT Proveedor"]||""}</div>
+                </td>
+                <td className="mono">{f["Factura"]||"—"}</td>
+                <td style={{whiteSpace:"nowrap"}}>{fmtDate(f["Fecha Emision"])}</td>
+                <td style={{whiteSpace:"nowrap"}}>{fmtDate(f["Vencimiento"])}</td>
+                <td>{estadoBadge(f)}</td>
+                <td className="mono" style={{color:"var(--text)",fontWeight:600}}>{fmt(f["Monto Total"])}</td>
+                <td>{f["Forma Pago"]||"—"}</td>
+                <td className="mono">{f["Patente"]||"—"}</td>
+                <td className="mono">{f["N° OC"]||"—"}</td>
+                <td style={{fontSize:12}}>{f["Área/Centro costo"]||f["Area/Centro costo"]||"—"}</td>
+                <td>{f["Usuario"]||"—"}</td>
+                <td>
+                  <div style={{display:"flex",gap:4}}>
+                    <button className="btn btn-secondary btn-sm" onClick={()=>onEdit(f)}>✏️</button>
+                    {f["Estado"] !== "Pagado" && (
+                      <button className="btn btn-success btn-sm" onClick={()=>onPagar(f)}>✓</button>
+                    )}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {pages > 1 && (
+        <div className="pagination">
+          <button className="btn btn-secondary btn-sm" onClick={()=>setPag(p=>Math.max(1,p-1))} disabled={pag===1}>‹</button>
+          <span>Página {pag} de {pages}</span>
+          <button className="btn btn-secondary btn-sm" onClick={()=>setPag(p=>Math.min(pages,p+1))} disabled={pag===pages}>›</button>
+        </div>
+      )}
+      {showPagoModal && (
+        <ModalPagoMultiple
+          seleccionadas={seleccionadas}
+          onConfirmar={async(datos)=>{ await onPagarMultiple(seleccionadas, datos); setSeleccionadas([]); setShowPagoModal(false); }}
+          onClose={()=>setShowPagoModal(false)}
+          saving={false}
+        />
+      )}
+    </div>
+  );
+}
+
+// --- RESUMEN PROVEEDORES ---
+function ResumenProveedores({ facturas }) {
+  const map = {};
+  facturas.forEach(f => {
+    const k = f["RUT Proveedor"]||"—";
+    if (!map[k]) map[k] = { nombre: f["Razon Social"]||k, total:0, pendiente:0, pagado:0, cnt:0 };
+    const m = parseFloat(f["Monto Total"])||0;
+    map[k].total += m; map[k].cnt++;
+    if (f["Estado"]==="Pagado") map[k].pagado += m;
+    else map[k].pendiente += m;
+  });
+  const rows = Object.entries(map).sort((a,b)=>b[1].total-a[1].total);
+  return (
+    <div className="table-wrap">
+      <div style={{padding:"16px 20px",borderBottom:"1px solid var(--border)",fontWeight:700,fontSize:14}}>
+        🏢 Resumen por Proveedor
+      </div>
+      <div style={{overflowX:"auto"}}>
+        <table>
+          <thead><tr>
+            <th>RUT</th><th>Razón Social</th><th>Facturas</th>
+            <th>Total</th><th>Pendiente</th><th>Pagado</th>
+          </tr></thead>
+          <tbody>
+            {rows.map(([rut,v])=>(
+              <tr key={rut}>
+                <td className="mono">{rut}</td>
+                <td style={{fontWeight:600,color:"var(--text)"}}>{v.nombre}</td>
+                <td className="mono">{v.cnt}</td>
+                <td className="mono" style={{color:"var(--accent2)",fontWeight:700}}>{fmt(v.total)}</td>
+                <td className="mono" style={{color:"var(--red)"}}>{fmt(v.pendiente)}</td>
+                <td className="mono" style={{color:"var(--green)"}}>{fmt(v.pagado)}</td>
+              </tr>
+            ))}
+            {rows.length===0&&<tr><td colSpan={6}><div className="empty-state"><div className="empty-icon">🏢</div><div>Sin datos</div></div></td></tr>}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+// --- RESUMEN CECO ---
+function ResumenCECO({ facturas }) {
+  const map = {};
+  facturas.forEach(f => {
+    const k = f["Area/Centro costo"]||"Sin CECO";
+    if (!map[k]) map[k] = { total:0, pendiente:0, pagado:0, cnt:0 };
+    const m = parseFloat(f["Monto Total"])||0;
+    map[k].total += m; map[k].cnt++;
+    if (f["Estado"]==="Pagado") map[k].pagado += m;
+    else map[k].pendiente += m;
+  });
+  const rows = Object.entries(map).sort((a,b)=>b[1].total-a[1].total);
+  const maxTotal = rows[0]?.[1]?.total || 1;
+  return (
+    <div className="table-wrap">
+      <div style={{padding:"16px 20px",borderBottom:"1px solid var(--border)",fontWeight:700,fontSize:14}}>
+        📊 Resumen por Centro de Costo
+      </div>
+      <div style={{padding:"20px"}}>
+        {rows.map(([k,v])=>(
+          <div key={k} style={{marginBottom:20}}>
+            <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}>
+              <span style={{fontSize:13,fontWeight:600,color:"var(--text)"}}>{k}</span>
+              <span style={{fontSize:13,fontFamily:"'DM Mono',monospace",color:"var(--accent2)",fontWeight:700}}>{fmt(v.total)}</span>
+            </div>
+            <div style={{height:8,background:"var(--bg3)",borderRadius:4,overflow:"hidden",marginBottom:4}}>
+              <div style={{height:"100%",width:`${(v.total/maxTotal)*100}%`,background:"linear-gradient(90deg,var(--accent),var(--accent2))",borderRadius:4,transition:"width 0.5s"}}/>
+            </div>
+            <div style={{display:"flex",gap:16,fontSize:11,color:"var(--text3)"}}>
+              <span>{v.cnt} facturas</span>
+              <span style={{color:"var(--red)"}}>Pendiente: {fmt(v.pendiente)}</span>
+              <span style={{color:"var(--green)"}}>Pagado: {fmt(v.pagado)}</span>
+            </div>
+          </div>
+        ))}
+        {rows.length===0&&<div className="empty-state"><div className="empty-icon">📊</div><div>Sin datos</div></div>}
+      </div>
+    </div>
+  );
+}
+
+// --- APP PRINCIPAL ---
+function App() {
+  const [vista, setVista] = React.useState("dashboard");
+  const [facturas, setFacturas] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [saving, setSaving] = React.useState(false);
+  const [msg, setMsg] = React.useState(null);
+  const [showForm, setShowForm] = React.useState(false);
+  const [editando, setEditando] = React.useState(null);
+
+  async function cargar() {
+    setLoading(true);
+    try {
+      const r = await fetch(`${APPS_SCRIPT_URL}?action=getFacturas`);
+      const d = await r.json();
+      if (d.success) setFacturas(d.data || []);
+      else throw new Error(d.error);
+    } catch(e) {
+      setMsg({ type:"error", text:"Error al cargar datos: " + e.message });
+    }
+    setLoading(false);
+  }
+
+  React.useEffect(()=>{ cargar(); },[]);
+
+  function showMsg(type, text) {
+    setMsg({type,text});
+    setTimeout(()=>setMsg(null), 4000);
+  }
+
+  async function handleSave(datos) {
+    setSaving(true);
+    try {
+      const action = editando ? "updateFactura" : "addFactura";
+      const payload = editando ? { ...datos, _rowIndex: editando._rowIndex } : datos;
+      const r = await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({ action, ...payload })
+      });
+      const d = await r.json();
+      if (d.success) {
+        showMsg("success", editando ? "Factura actualizada ✓" : "Factura agregada ✓");
+        setShowForm(false); setEditando(null);
+        cargar();
+      } else throw new Error(d.error);
+    } catch(e) {
+      showMsg("error", "Error: " + e.message);
+    }
+    setSaving(false);
+  }
+
+  async function handlePagar(f) {
+    if (!confirm(`¿Marcar como PAGADA la factura ${f["Factura"]} de ${f["Razon Social"]}?`)) return;
+    setSaving(true);
+    try {
+      const hoy = new Date().toISOString().split("T")[0];
+      const r = await fetch(APPS_SCRIPT_URL, {
+        method:"POST",
+        body: JSON.stringify({ action:"updateFactura", ...f, "Estado":"Pagado", "Fecha Pago": hoy, _rowIndex: f._rowIndex })
+      });
+      const d = await r.json();
+      if (d.success) { showMsg("success","Factura marcada como pagada ✓"); cargar(); }
+      else throw new Error(d.error);
+    } catch(e) { showMsg("error","Error: "+e.message); }
+    setSaving(false);
+  }
+
+  async function handlePagarMultiple(seleccionadas, datos) {
+    setSaving(true);
+    try {
+      // Subir comprobante a Drive si hay archivo
+      let linkComprobante = "";
+      if (datos.comprobante) {
+        const rDrive = await fetch(APPS_SCRIPT_URL, {
+          method: "POST",
+          body: JSON.stringify({
+            action: "subirComprobante",
+            base64: datos.comprobante.base64,
+            nombre: datos.comprobante.nombre,
+            tipo: datos.comprobante.tipo,
+            folderId: "1bLyoGEtgHh10YVlKyBm9_lt18hCaplsw"
+          })
+        });
+        const dDrive = await rDrive.json();
+        if (dDrive.success) linkComprobante = dDrive.url;
+      }
+
+      // Actualizar cada factura
+      for (const f of seleccionadas) {
+        await fetch(APPS_SCRIPT_URL, {
+          method: "POST",
+          body: JSON.stringify({
+            action: "updateFactura",
+            ...f,
+            "Estado": "Pagado",
+            "Fecha Pago": datos.fechaPago,
+            "Forma Pago": datos.medioPago,
+            "N° Transferencia": datos.nTransfer,
+            "Comprobante": linkComprobante,
+            _rowIndex: f._rowIndex
+          })
+        });
+      }
+      showMsg("success", `✓ ${seleccionadas.length} facturas marcadas como pagadas`);
+      cargar();
+    } catch(e) {
+      showMsg("error", "Error: " + e.message);
+    }
+    setSaving(false);
+  }
+    { id:"dashboard", icon:"📊", label:"Dashboard" },
+    { id:"facturas", icon:"📄", label:"Facturas" },
+    { id:"proveedores", icon:"🏢", label:"Proveedores" },
+    { id:"ceco", icon:"📈", label:"Centro de Costo" },
+  ];
+
+  return (
+    <div className="app">
+      <div className="sidebar">
+        <div className="logo">
+          <div className="logo-title">INCOM</div>
+          <div className="logo-sub">Control de Facturas</div>
+        </div>
+        <nav className="nav">
+          {navItems.map(n=>(
+            <div key={n.id} className={`nav-item${vista===n.id?" active":""}`} onClick={()=>setVista(n.id)}>
+              <span className="nav-icon">{n.icon}</span>
+              {n.label}
+            </div>
+          ))}
+        </nav>
+        <div style={{padding:"16px 20px",borderTop:"1px solid var(--border)"}}>
+          <button className="btn btn-secondary" style={{width:"100%",justifyContent:"center"}} onClick={cargar}>
+            🔄 Actualizar
+          </button>
+        </div>
+      </div>
+
+      <div className="main">
+        {msg && (
+          <div className={`alert ${msg.type==="error"?"alert-red":"alert-green"}`} style={{position:"fixed",top:20,right:20,zIndex:300,minWidth:280}}>
+            {msg.text}
+          </div>
+        )}
+
+        <div className="page-header">
+          <div>
+            <div className="page-title">
+              {navItems.find(n=>n.id===vista)?.icon} {navItems.find(n=>n.id===vista)?.label}
+            </div>
+            <div className="page-sub">{facturas.length} facturas cargadas</div>
+          </div>
+          {vista === "facturas" && (
+            <button className="btn btn-primary" onClick={()=>{setEditando(null);setShowForm(true);}}>
+              + Nueva Factura
+            </button>
+          )}
+        </div>
+
+        {loading ? (
+          <div className="loader">
+            <div className="spinner"/>
+            <span>Cargando datos desde Google Sheets...</span>
+          </div>
+        ) : (
+          <>
+            {vista === "dashboard" && <Dashboard facturas={facturas}/>}
+            {vista === "facturas" && (
+              <TablaFacturas
+                facturas={facturas}
+                onEdit={f=>{setEditando(f);setShowForm(true);}}
+                onPagar={handlePagar}
+                onPagarMultiple={handlePagarMultiple}
+                onDelete={()=>{}}
+              />
+            )}
+            {vista === "proveedores" && <ResumenProveedores facturas={facturas}/>}
+            {vista === "ceco" && <ResumenCECO facturas={facturas}/>}
+          </>
+        )}
+      </div>
+
+      {showForm && (
+        <FacturaForm
+          inicial={editando}
+          onSave={handleSave}
+          onClose={()=>{setShowForm(false);setEditando(null);}}
+          loading={saving}
+        />
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
