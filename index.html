@@ -26,13 +26,9 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-  
-  /* LAYOUT */
   .app { display: flex; min-height: 100vh; }
   .sidebar { width: 220px; background: var(--bg2); border-right: 1px solid var(--border); padding: 24px 0; position: fixed; height: 100vh; display: flex; flex-direction: column; z-index: 100; }
   .main { margin-left: 220px; flex: 1; padding: 32px; min-height: 100vh; }
-
-  /* SIDEBAR */
   .logo { padding: 0 20px 24px; border-bottom: 1px solid var(--border); }
   .logo-title { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: 0.5px; }
   .logo-sub { font-size: 11px; color: var(--text3); margin-top: 2px; font-family: 'DM Mono', monospace; }
@@ -41,13 +37,9 @@
   .nav-item:hover { color: var(--text); background: var(--bg3); }
   .nav-item.active { color: var(--accent2); background: rgba(59,130,246,0.08); border-left-color: var(--accent); }
   .nav-icon { font-size: 16px; width: 20px; text-align: center; }
-
-  /* HEADER */
   .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
   .page-title { font-size: 22px; font-weight: 700; }
   .page-sub { font-size: 13px; color: var(--text3); margin-top: 2px; }
-
-  /* BOTONES */
   .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
   .btn-primary { background: var(--accent); color: white; }
   .btn-primary:hover { background: #2563eb; }
@@ -56,8 +48,6 @@
   .btn-danger { background: rgba(239,68,68,0.1); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
   .btn-success { background: rgba(34,197,94,0.1); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
   .btn-sm { padding: 5px 10px; font-size: 12px; }
-
-  /* CARDS KPI */
   .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
   .kpi-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
   .kpi-label { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; }
@@ -67,8 +57,6 @@
   .kpi-yellow .kpi-value { color: var(--yellow); }
   .kpi-green .kpi-value { color: var(--green); }
   .kpi-blue .kpi-value { color: var(--accent2); }
-
-  /* TABLA */
   .table-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
   .table-toolbar { display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
   .search-box { flex: 1; min-width: 200px; display: flex; align-items: center; gap: 8px; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; }
@@ -85,16 +73,12 @@
   td.mono { font-family: 'DM Mono', monospace; font-size: 12px; }
   .empty-state { text-align: center; padding: 60px 20px; color: var(--text3); }
   .empty-icon { font-size: 40px; margin-bottom: 12px; }
-
-  /* BADGES */
   .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
   .badge-red { background: rgba(239,68,68,0.12); color: var(--red); }
   .badge-yellow { background: rgba(245,158,11,0.12); color: var(--yellow); }
   .badge-green { background: rgba(34,197,94,0.12); color: var(--green); }
   .badge-blue { background: rgba(59,130,246,0.12); color: var(--accent2); }
   .badge-gray { background: rgba(100,116,139,0.12); color: var(--text3); }
-
-  /* MODAL */
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
   .modal { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 780px; max-height: 90vh; overflow-y: auto; }
   .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--bg2); z-index: 1; }
@@ -103,8 +87,6 @@
   .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
   .close-btn { background: none; border: none; color: var(--text3); font-size: 20px; cursor: pointer; padding: 4px 8px; border-radius: 6px; }
   .close-btn:hover { background: var(--bg3); color: var(--text); }
-
-  /* FORM */
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .form-group { display: flex; flex-direction: column; gap: 6px; }
   .form-group.full { grid-column: 1/-1; }
@@ -114,8 +96,6 @@
   input::placeholder { color: var(--text3); }
   .section-title { font-size: 12px; font-weight: 700; color: var(--accent2); text-transform: uppercase; letter-spacing: 1px; padding-bottom: 10px; border-bottom: 1px solid var(--border); margin-bottom: 4px; grid-column: 1/-1; }
   .calculated { background: rgba(59,130,246,0.05); border-color: rgba(59,130,246,0.3); color: var(--accent2); }
-
-  /* RESUMEN CARDS */
   .resumen-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
   .resumen-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
   .resumen-card h3 { font-size: 13px; font-weight: 600; color: var(--text2); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
@@ -123,18 +103,12 @@
   .resumen-row:last-child { border-bottom: none; }
   .resumen-label { font-size: 12px; color: var(--text3); }
   .resumen-val { font-size: 13px; font-weight: 600; font-family: 'DM Mono', monospace; }
-
-  /* LOADER */
   .loader { display: flex; align-items: center; justify-content: center; padding: 60px; gap: 12px; color: var(--text3); }
   .spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* ALERT */
   .alert { padding: 12px 16px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; }
   .alert-red { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; }
   .alert-green { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); color: #86efac; }
-
-  /* ALERTAS VENCIMIENTO */
   .alertas-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
   .alerta-item { display: flex; align-items: center; gap: 12px; background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.2); border-radius: 10px; padding: 12px 16px; }
   .alerta-item.rojo { background: rgba(239,68,68,0.06); border-color: rgba(239,68,68,0.2); }
@@ -145,14 +119,8 @@
   .alerta-detalle { font-size: 12px; color: var(--text3); margin-top: 2px; }
   .alerta-monto { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 600; color: var(--yellow); }
   .alerta-monto.rojo { color: var(--red); }
-
-  .tab-bar { display: flex; gap: 4px; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 4px; margin-bottom: 20px; width: fit-content; }
-  .tab { padding: 7px 18px; border-radius: 7px; font-size: 13px; font-weight: 500; cursor: pointer; color: var(--text3); transition: all 0.15s; }
-  .tab.active { background: var(--accent); color: white; }
-
   .pagination { display: flex; align-items: center; gap: 8px; padding: 16px 20px; justify-content: flex-end; border-top: 1px solid var(--border); }
   .pagination span { font-size: 13px; color: var(--text3); }
-
   @media (max-width: 900px) {
     .kpi-grid { grid-template-columns: 1fr 1fr; }
     .resumen-grid { grid-template-columns: 1fr; }
@@ -169,6 +137,13 @@ const CONDICION_PAGO = ["5 días","15 días","30 días","45 días","60 días","C
 const MEDIO_PAGO = ["Transferencia","Efectivo","Tarjeta de Crédito","Caja Chica"];
 const TIPO_DOC = ["Factura","Boleta","Nota de Crédito","Nota de Débito","Liquidación"];
 const TIPO_COMPRA = ["Bien","Servicio","Combustible","Repuesto","Neumático","Otro"];
+
+const NAV_ITEMS = [
+  { id:"dashboard", icon:"📊", label:"Dashboard" },
+  { id:"facturas",  icon:"📄", label:"Facturas" },
+  { id:"proveedores", icon:"🏢", label:"Proveedores" },
+  { id:"ceco",     icon:"📈", label:"Centro de Costo" },
+];
 
 function fmt(n) {
   if (!n && n !== 0) return "—";
@@ -201,7 +176,6 @@ function estadoBadge(f) {
   return <span className="badge badge-blue">Pendiente</span>;
 }
 
-// --- FORM ---
 function FacturaForm({ inicial, onSave, onClose, loading }) {
   const hoy = new Date().toISOString().split("T")[0];
   const [f, setF] = React.useState(inicial || {
@@ -214,13 +188,11 @@ function FacturaForm({ inicial, onSave, onClose, loading }) {
     "Descripcion": "", "SUB CECO": "", "Solicitante": "", "Usuario": "",
     "asociado_equipo": false
   });
-
   const [err, setErr] = React.useState("");
 
   function set(k, v) {
     setF(prev => {
       const next = { ...prev, [k]: v };
-      // Calcular vencimiento
       if ((k === "Fecha Emision" || k === "Con. de Pago") && next["Fecha Emision"]) {
         const dias = parseInt(next["Con. de Pago"]) || 0;
         if (dias > 0) {
@@ -230,7 +202,6 @@ function FacturaForm({ inicial, onSave, onClose, loading }) {
           next["Dias Vencimiento"] = dias;
         }
       }
-      // Calcular IVA y Total
       if (k === "Monto Neto") {
         const neto = parseFloat(v) || 0;
         const iva = Math.round(neto * 0.19);
@@ -313,7 +284,6 @@ function FacturaForm({ inicial, onSave, onClose, loading }) {
               <label>Vencimiento (calculado)</label>
               <input className="calculated" type="date" value={f["Vencimiento"]} onChange={e=>set("Vencimiento",e.target.value)}/>
             </div>
-
             <div className="section-title">💰 Montos</div>
             <div className="form-group">
               <label>Monto Exento</label>
@@ -331,7 +301,6 @@ function FacturaForm({ inicial, onSave, onClose, loading }) {
               <label>Monto Total (auto)</label>
               <input className="calculated" readOnly value={f["Monto Total"]}/>
             </div>
-
             <div className="section-title">✅ Pago</div>
             <div className="form-group">
               <label>Estado</label>
@@ -354,7 +323,6 @@ function FacturaForm({ inicial, onSave, onClose, loading }) {
               <label>Centro de Gasto</label>
               <input placeholder="Centro" value={f["Centro Gasto"]} onChange={e=>set("Centro Gasto",e.target.value)}/>
             </div>
-
             <div className="section-title">🚛 Clasificación</div>
             <div className="form-group full" style={{flexDirection:"row",alignItems:"center",gap:10}}>
               <input type="checkbox" id="eq" checked={f["asociado_equipo"]} onChange={e=>set("asociado_equipo",e.target.checked)} style={{width:16,height:16}}/>
@@ -415,9 +383,7 @@ function FacturaForm({ inicial, onSave, onClose, loading }) {
   );
 }
 
-// --- DASHBOARD ---
 function Dashboard({ facturas }) {
-  const hoy = new Date(); hoy.setHours(0,0,0,0);
   const pendientes = facturas.filter(f => (f["Estado"]||"") !== "Pagado" && (f["Estado"]||"") !== "Anulada");
   const vencidas = pendientes.filter(f => { const d = diasVence(f["Vencimiento"]); return d !== null && d < 0; });
   const por7 = pendientes.filter(f => { const d = diasVence(f["Vencimiento"]); return d !== null && d >= 0 && d <= 7; });
@@ -425,7 +391,6 @@ function Dashboard({ facturas }) {
   const totalPendiente = pendientes.reduce((a,f)=>a+(parseFloat(f["Monto Total"])||0),0);
   const totalPagado = pagadas.reduce((a,f)=>a+(parseFloat(f["Monto Total"])||0),0);
 
-  // Por proveedor top 5
   const porProv = {};
   pendientes.forEach(f => {
     const k = f["Razon Social"] || f["RUT Proveedor"] || "Sin nombre";
@@ -433,7 +398,6 @@ function Dashboard({ facturas }) {
   });
   const topProv = Object.entries(porProv).sort((a,b)=>b[1]-a[1]).slice(0,5);
 
-  // Por CECO
   const porCeco = {};
   facturas.forEach(f => {
     const k = f["Area/Centro costo"] || "Sin CECO";
@@ -467,12 +431,9 @@ function Dashboard({ facturas }) {
           <div className="kpi-sub">{pagadas.length} facturas</div>
         </div>
       </div>
-
       {alertas.length > 0 && (
         <div style={{marginBottom:24}}>
-          <div style={{fontSize:13,fontWeight:700,color:"var(--text2)",marginBottom:10,display:"flex",alignItems:"center",gap:8}}>
-            🔔 Alertas de Vencimiento
-          </div>
+          <div style={{fontSize:13,fontWeight:700,color:"var(--text2)",marginBottom:10}}>🔔 Alertas de Vencimiento</div>
           <div className="alertas-list">
             {alertas.map((f,i)=>{
               const dias = diasVence(f["Vencimiento"]);
@@ -491,7 +452,6 @@ function Dashboard({ facturas }) {
           </div>
         </div>
       )}
-
       <div className="resumen-grid">
         <div className="resumen-card">
           <h3>🏢 Top Proveedores (pendiente)</h3>
@@ -515,7 +475,7 @@ function Dashboard({ facturas }) {
         </div>
         <div className="resumen-card">
           <h3>💳 Por Medio de Pago</h3>
-          {["Transferencia","Efectivo","Tarjeta de Crédito","Caja Chica"].map(mp=>{
+          {MEDIO_PAGO.map(mp=>{
             const total = pagadas.filter(f=>f["Forma Pago"]===mp).reduce((a,f)=>a+(parseFloat(f["Monto Total"])||0),0);
             const cnt = pagadas.filter(f=>f["Forma Pago"]===mp).length;
             if(!cnt) return null;
@@ -533,10 +493,9 @@ function Dashboard({ facturas }) {
   );
 }
 
-// --- EXPORTAR EXCEL ---
 function exportarExcel(datos, nombre) {
   const headers = ["Nro","Tipo Doc","Tipo Compra","RUT Proveedor","Razon Social","Factura",
-    "Fecha Emision","Con. de Pago","Vencimiento","Dias Vencimiento","Estado",
+    "Fecha Emision","Con. de Pago","Vencimiento","Estado",
     "Monto Exento","Monto Neto","Monto IVA Recuperable","Monto Total",
     "Fecha Pago","Forma Pago","Centro Gasto","Patente","N° Solicitud","N° OC",
     "Area/Centro costo","Subdivision/Actividad","Descripcion","SUB CECO","Solicitante","Usuario"];
@@ -548,15 +507,13 @@ function exportarExcel(datos, nombre) {
     });
     csvRows.push(row.join(";"));
   });
-  const BOM = "\uFEFF";
-  const blob = new Blob([BOM + csvRows.join("\n")], { type: "text/csv;charset=utf-8;" });
+  const blob = new Blob(["\uFEFF" + csvRows.join("\n")], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url; a.download = nombre || "facturas_incom.csv"; a.click();
   URL.revokeObjectURL(url);
 }
 
-// --- MODAL PAGO MULTIPLE ---
 function ModalPagoMultiple({ seleccionadas, onConfirmar, onClose, saving }) {
   const hoy = new Date().toISOString().split("T")[0];
   const [fechaPago, setFechaPago] = React.useState(hoy);
@@ -564,8 +521,6 @@ function ModalPagoMultiple({ seleccionadas, onConfirmar, onClose, saving }) {
   const [nTransfer, setNTransfer] = React.useState("");
   const [comprobante, setComprobante] = React.useState(null);
   const [nombreArchivo, setNombreArchivo] = React.useState("");
-  const [subiendo, setSubiendo] = React.useState(false);
-
   const total = seleccionadas.reduce((a,f)=>a+(parseFloat(f["Monto Total"])||0),0);
 
   function handleFile(e) {
@@ -577,12 +532,6 @@ function ModalPagoMultiple({ seleccionadas, onConfirmar, onClose, saving }) {
     reader.readAsDataURL(file);
   }
 
-  async function handleConfirmar() {
-    setSubiendo(true);
-    await onConfirmar({ fechaPago, medioPago, nTransfer, comprobante });
-    setSubiendo(false);
-  }
-
   return (
     <div className="modal-overlay" onClick={e=>e.target===e.currentTarget&&onClose()}>
       <div className="modal" style={{maxWidth:560}}>
@@ -591,9 +540,8 @@ function ModalPagoMultiple({ seleccionadas, onConfirmar, onClose, saving }) {
           <button className="close-btn" onClick={onClose}>✕</button>
         </div>
         <div className="modal-body">
-          {/* Facturas seleccionadas */}
           <div style={{background:"var(--bg3)",borderRadius:10,padding:14,marginBottom:20}}>
-            <div style={{fontSize:12,fontWeight:700,color:"var(--text3)",marginBottom:10,textTransform:"uppercase",letterSpacing:"0.5px"}}>
+            <div style={{fontSize:12,fontWeight:700,color:"var(--text3)",marginBottom:10,textTransform:"uppercase"}}>
               {seleccionadas.length} Facturas seleccionadas
             </div>
             <div style={{maxHeight:150,overflowY:"auto",display:"flex",flexDirection:"column",gap:6}}>
@@ -609,7 +557,6 @@ function ModalPagoMultiple({ seleccionadas, onConfirmar, onClose, saving }) {
               <span style={{fontFamily:"'DM Mono',monospace",fontWeight:700,fontSize:16,color:"var(--green)"}}>{fmt(total)}</span>
             </div>
           </div>
-
           <div className="form-grid">
             <div className="form-group">
               <label>Fecha de Pago</label>
@@ -629,33 +576,21 @@ function ModalPagoMultiple({ seleccionadas, onConfirmar, onClose, saving }) {
             )}
             <div className="form-group full">
               <label>Comprobante (imagen o PDF)</label>
-              <div style={{border:"2px dashed var(--border)",borderRadius:8,padding:20,textAlign:"center",cursor:"pointer",transition:"border 0.15s"}}
-                onClick={()=>document.getElementById("fileInput").click()}
-                onDragOver={e=>{e.preventDefault();e.currentTarget.style.borderColor="var(--accent)"}}
-                onDragLeave={e=>{e.currentTarget.style.borderColor="var(--border)"}}
-                onDrop={e=>{e.preventDefault();const f=e.dataTransfer.files[0];if(f){setNombreArchivo(f.name);const r=new FileReader();r.onload=ev=>setComprobante({base64:ev.target.result.split(",")[1],nombre:f.name,tipo:f.type});r.readAsDataURL(f);}}}>
+              <div style={{border:"2px dashed var(--border)",borderRadius:8,padding:20,textAlign:"center",cursor:"pointer"}}
+                onClick={()=>document.getElementById("fileInput").click()}>
                 <input id="fileInput" type="file" accept="image/*,.pdf" style={{display:"none"}} onChange={handleFile}/>
-                {nombreArchivo ? (
-                  <div>
-                    <div style={{fontSize:24,marginBottom:6}}>📎</div>
-                    <div style={{fontSize:13,color:"var(--green)",fontWeight:600}}>{nombreArchivo}</div>
-                    <div style={{fontSize:11,color:"var(--text3)",marginTop:4}}>Click para cambiar</div>
-                  </div>
-                ) : (
-                  <div>
-                    <div style={{fontSize:24,marginBottom:6}}>☁️</div>
-                    <div style={{fontSize:13,color:"var(--text3)"}}>Arrastra o click para subir comprobante</div>
-                    <div style={{fontSize:11,color:"var(--text3)",marginTop:4}}>JPG, PNG, PDF</div>
-                  </div>
-                )}
+                {nombreArchivo
+                  ? <div><div style={{fontSize:24,marginBottom:6}}>📎</div><div style={{fontSize:13,color:"var(--green)",fontWeight:600}}>{nombreArchivo}</div></div>
+                  : <div><div style={{fontSize:24,marginBottom:6}}>☁️</div><div style={{fontSize:13,color:"var(--text3)"}}>Click para subir comprobante</div></div>
+                }
               </div>
             </div>
           </div>
         </div>
         <div className="modal-footer">
           <button className="btn btn-secondary" onClick={onClose}>Cancelar</button>
-          <button className="btn btn-primary" onClick={handleConfirmar} disabled={saving||subiendo}>
-            {saving||subiendo ? "Procesando..." : `✓ Confirmar Pago ${fmt(total)}`}
+          <button className="btn btn-primary" onClick={()=>onConfirmar({fechaPago,medioPago,nTransfer,comprobante})} disabled={saving}>
+            {saving ? "Procesando..." : `✓ Confirmar Pago ${fmt(total)}`}
           </button>
         </div>
       </div>
@@ -663,47 +598,31 @@ function ModalPagoMultiple({ seleccionadas, onConfirmar, onClose, saving }) {
   );
 }
 
-// --- TABLA FACTURAS ---
-function TablaFacturas({ facturas, onEdit, onPagar, onPagarMultiple, onDelete }) {
+function TablaFacturas({ facturas, onEdit, onPagar, onPagarMultiple }) {
   const [q, setQ] = React.useState("");
   const [filtroEstado, setFiltroEstado] = React.useState("");
   const [filtroPago, setFiltroPago] = React.useState("");
-  const [filtroCeco, setFiltroCeco] = React.useState("");
-  const [filtroSubdiv, setFiltroSubdiv] = React.useState("");
   const [pag, setPag] = React.useState(1);
   const [seleccionadas, setSeleccionadas] = React.useState([]);
   const [showPagoModal, setShowPagoModal] = React.useState(false);
   const PER_PAGE = 15;
 
-  const cecos = [...new Set(facturas.map(f=>(f["Área/Centro costo"]||f["Area/Centro costo"]||"")).filter(Boolean))].sort();
-  const subdivs = [...new Set(facturas.map(f=>(f["Subdivisión/Actividad"]||f["Subdivision/Actividad"]||"")).filter(Boolean))].sort();
-
   const filtered = facturas.filter(f => {
     const txt = q.toLowerCase();
-    const match = !txt || 
+    const match = !txt ||
       (f["Razon Social"]||"").toLowerCase().includes(txt) ||
       (f["RUT Proveedor"]||"").toLowerCase().includes(txt) ||
       String(f["Factura"]||"").includes(txt) ||
       (f["Descripcion"]||"").toLowerCase().includes(txt);
     const matchEstado = !filtroEstado || (f["Estado"]||"") === filtroEstado;
     const matchPago = !filtroPago || (f["Forma Pago"]||"") === filtroPago;
-    const matchCeco = !filtroCeco || (f["Área/Centro costo"]||f["Area/Centro costo"]||"") === filtroCeco;
-    const matchSubdiv = !filtroSubdiv || (f["Subdivisión/Actividad"]||f["Subdivision/Actividad"]||"") === filtroSubdiv;
-    return match && matchEstado && matchPago && matchCeco && matchSubdiv;
+    return match && matchEstado && matchPago;
   });
 
   const total = filtered.length;
   const pages = Math.ceil(total / PER_PAGE);
   const slice = filtered.slice((pag-1)*PER_PAGE, pag*PER_PAGE);
-
-  React.useEffect(()=>setPag(1),[q,filtroEstado,filtroPago,filtroCeco,filtroSubdiv]);
-
-  const handleExport = () => {
-    const fecha = new Date().toLocaleDateString("es-CL").replace(/\//g,"-");
-    exportarExcel(filtered, `facturas_incom_${fecha}.csv`);
-  };
-
-  const hayFiltros = q||filtroEstado||filtroPago||filtroCeco||filtroSubdiv;
+  React.useEffect(()=>setPag(1),[q,filtroEstado,filtroPago]);
 
   function toggleSeleccion(f) {
     setSeleccionadas(prev => {
@@ -711,20 +630,13 @@ function TablaFacturas({ facturas, onEdit, onPagar, onPagarMultiple, onDelete })
       return existe ? prev.filter(x=>x._rowIndex!==f._rowIndex) : [...prev, f];
     });
   }
-
-  function toggleTodos() {
-    const pendientes = slice.filter(f=>f["Estado"]!=="Pagado");
-    if (seleccionadas.length === pendientes.length) setSeleccionadas([]);
-    else setSeleccionadas(pendientes);
-  }
-
   const estaSeleccionada = f => seleccionadas.some(x=>x._rowIndex===f._rowIndex);
   const totalSeleccionado = seleccionadas.reduce((a,f)=>a+(parseFloat(f["Monto Total"])||0),0);
 
   return (
     <div className="table-wrap">
-      <div className="table-toolbar" style={{flexWrap:"wrap",gap:8}}>
-        <div className="search-box" style={{minWidth:200}}>
+      <div className="table-toolbar">
+        <div className="search-box">
           <span style={{color:"var(--text3)"}}>🔍</span>
           <input placeholder="Buscar proveedor, RUT, N° factura..." value={q} onChange={e=>setQ(e.target.value)}/>
         </div>
@@ -736,77 +648,39 @@ function TablaFacturas({ facturas, onEdit, onPagar, onPagarMultiple, onDelete })
           <option value="">Todos los medios</option>
           {MEDIO_PAGO.map(s=><option key={s}>{s}</option>)}
         </select>
-        <select className="filter" value={filtroCeco} onChange={e=>setFiltroCeco(e.target.value)}>
-          <option value="">Todos los CECO</option>
-          {cecos.map(s=><option key={s}>{s}</option>)}
-        </select>
-        <select className="filter" value={filtroSubdiv} onChange={e=>setFiltroSubdiv(e.target.value)}>
-          <option value="">Todas las subdivisiones</option>
-          {subdivs.map(s=><option key={s}>{s}</option>)}
-        </select>
         <div style={{marginLeft:"auto",display:"flex",alignItems:"center",gap:10}}>
-          {hayFiltros && (
-            <button className="btn btn-secondary btn-sm" onClick={()=>{setQ("");setFiltroEstado("");setFiltroPago("");setFiltroCeco("");setFiltroSubdiv("");}}>
-              ✕ Limpiar filtros
-            </button>
-          )}
           <span style={{fontSize:12,color:"var(--text3)"}}>{total} registros</span>
-          <button className="btn btn-success btn-sm" onClick={handleExport}>📥 Exportar Excel</button>
+          <button className="btn btn-success btn-sm" onClick={()=>exportarExcel(filtered,"facturas_incom.csv")}>📥 Exportar</button>
         </div>
       </div>
-      {/* BARRA PAGO MULTIPLE */}
       {seleccionadas.length > 0 && (
-        <div style={{background:"var(--accent)",padding:"12px 20px",display:"flex",alignItems:"center",gap:16,flexWrap:"wrap"}}>
-          <span style={{fontSize:13,fontWeight:700,color:"white"}}>{seleccionadas.length} facturas seleccionadas</span>
-          <span style={{fontSize:13,fontFamily:"'DM Mono',monospace",color:"rgba(255,255,255,0.9)",fontWeight:600}}>{fmt(totalSeleccionado)}</span>
-          <button className="btn" style={{background:"white",color:"var(--accent)",marginLeft:"auto"}} onClick={()=>setShowPagoModal(true)}>
-            💳 Registrar Pago
-          </button>
-          <button className="btn" style={{background:"rgba(255,255,255,0.2)",color:"white",border:"1px solid rgba(255,255,255,0.3)"}} onClick={()=>setSeleccionadas([])}>
-            ✕ Limpiar
-          </button>
+        <div style={{background:"var(--accent)",padding:"12px 20px",display:"flex",alignItems:"center",gap:16}}>
+          <span style={{fontSize:13,fontWeight:700,color:"white"}}>{seleccionadas.length} seleccionadas</span>
+          <span style={{fontSize:13,fontFamily:"'DM Mono',monospace",color:"rgba(255,255,255,0.9)"}}>{fmt(totalSeleccionado)}</span>
+          <button className="btn" style={{background:"white",color:"var(--accent)",marginLeft:"auto"}} onClick={()=>setShowPagoModal(true)}>💳 Registrar Pago</button>
+          <button className="btn" style={{background:"rgba(255,255,255,0.2)",color:"white",border:"1px solid rgba(255,255,255,0.3)"}} onClick={()=>setSeleccionadas([])}>✕</button>
         </div>
       )}
       <div style={{overflowX:"auto"}}>
         <table>
           <thead>
             <tr>
-              <th style={{width:50,textAlign:"center"}}>☑</th>
-              <th>N°</th>
-              <th>Tipo</th>
-              <th>Proveedor</th>
-              <th>Factura</th>
-              <th>Emisión</th>
-              <th>Vencimiento</th>
-              <th>Estado</th>
-              <th>Monto Total</th>
-              <th>Medio Pago</th>
-              <th>Patente</th>
-              <th>N° OC</th>
-              <th>CECO</th>
-              <th>Usuario</th>
-              <th>Acciones</th>
+              <th style={{width:40}}>☑</th>
+              <th>Proveedor</th><th>Factura</th><th>Emisión</th><th>Vencimiento</th>
+              <th>Estado</th><th>Monto Total</th><th>CECO</th><th>Usuario</th><th>Acciones</th>
             </tr>
           </thead>
           <tbody>
             {slice.length === 0 && (
-              <tr><td colSpan={15}>
-                <div className="empty-state">
-                  <div className="empty-icon">📄</div>
-                  <div>No se encontraron facturas</div>
-                </div>
-              </td></tr>
+              <tr><td colSpan={10}><div className="empty-state"><div className="empty-icon">📄</div><div>No se encontraron facturas</div></div></td></tr>
             )}
             {slice.map((f,i)=>(
-              <tr key={i} style={{background: estaSeleccionada(f)?"rgba(59,130,246,0.08)":""}}>
+              <tr key={i} style={{background:estaSeleccionada(f)?"rgba(59,130,246,0.08)":""}}>
                 <td style={{textAlign:"center"}}>
                   {f["Estado"]!=="Pagado" && (
-                    <input type="checkbox" checked={estaSeleccionada(f)} onChange={()=>toggleSeleccion(f)} 
-                      style={{cursor:"pointer",width:18,height:18,accentColor:"var(--accent)"}}/>
+                    <input type="checkbox" checked={estaSeleccionada(f)} onChange={()=>toggleSeleccion(f)} style={{cursor:"pointer",width:16,height:16,accentColor:"var(--accent)"}}/>
                   )}
                 </td>
-                <td className="mono" style={{color:"var(--text3)"}}>{f["Nro"]||"—"}</td>
-                <td><span className="badge badge-gray">{f["Tipo Doc"]||"—"}</span></td>
                 <td style={{maxWidth:160}}>
                   <div style={{fontWeight:600,color:"var(--text)",fontSize:13,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{f["Razon Social"]||"—"}</div>
                   <div style={{fontSize:11,color:"var(--text3)",fontFamily:"'DM Mono',monospace"}}>{f["RUT Proveedor"]||""}</div>
@@ -816,17 +690,12 @@ function TablaFacturas({ facturas, onEdit, onPagar, onPagarMultiple, onDelete })
                 <td style={{whiteSpace:"nowrap"}}>{fmtDate(f["Vencimiento"])}</td>
                 <td>{estadoBadge(f)}</td>
                 <td className="mono" style={{color:"var(--text)",fontWeight:600}}>{fmt(f["Monto Total"])}</td>
-                <td>{f["Forma Pago"]||"—"}</td>
-                <td className="mono">{f["Patente"]||"—"}</td>
-                <td className="mono">{f["N° OC"]||"—"}</td>
-                <td style={{fontSize:12}}>{f["Área/Centro costo"]||f["Area/Centro costo"]||"—"}</td>
+                <td style={{fontSize:12}}>{f["Area/Centro costo"]||"—"}</td>
                 <td>{f["Usuario"]||"—"}</td>
                 <td>
                   <div style={{display:"flex",gap:4}}>
                     <button className="btn btn-secondary btn-sm" onClick={()=>onEdit(f)}>✏️</button>
-                    {f["Estado"] !== "Pagado" && (
-                      <button className="btn btn-success btn-sm" onClick={()=>onPagar(f)}>✓</button>
-                    )}
+                    {f["Estado"]!=="Pagado" && <button className="btn btn-success btn-sm" onClick={()=>onPagar(f)}>✓</button>}
                   </div>
                 </td>
               </tr>
@@ -844,7 +713,7 @@ function TablaFacturas({ facturas, onEdit, onPagar, onPagarMultiple, onDelete })
       {showPagoModal && (
         <ModalPagoMultiple
           seleccionadas={seleccionadas}
-          onConfirmar={async(datos)=>{ await onPagarMultiple(seleccionadas, datos); setSeleccionadas([]); setShowPagoModal(false); }}
+          onConfirmar={async(datos)=>{ await onPagarMultiple(seleccionadas,datos); setSeleccionadas([]); setShowPagoModal(false); }}
           onClose={()=>setShowPagoModal(false)}
           saving={false}
         />
@@ -853,29 +722,22 @@ function TablaFacturas({ facturas, onEdit, onPagar, onPagarMultiple, onDelete })
   );
 }
 
-// --- RESUMEN PROVEEDORES ---
 function ResumenProveedores({ facturas }) {
   const map = {};
   facturas.forEach(f => {
     const k = f["RUT Proveedor"]||"—";
-    if (!map[k]) map[k] = { nombre: f["Razon Social"]||k, total:0, pendiente:0, pagado:0, cnt:0 };
+    if (!map[k]) map[k] = { nombre:f["Razon Social"]||k, total:0, pendiente:0, pagado:0, cnt:0 };
     const m = parseFloat(f["Monto Total"])||0;
     map[k].total += m; map[k].cnt++;
-    if (f["Estado"]==="Pagado") map[k].pagado += m;
-    else map[k].pendiente += m;
+    if (f["Estado"]==="Pagado") map[k].pagado += m; else map[k].pendiente += m;
   });
   const rows = Object.entries(map).sort((a,b)=>b[1].total-a[1].total);
   return (
     <div className="table-wrap">
-      <div style={{padding:"16px 20px",borderBottom:"1px solid var(--border)",fontWeight:700,fontSize:14}}>
-        🏢 Resumen por Proveedor
-      </div>
+      <div style={{padding:"16px 20px",borderBottom:"1px solid var(--border)",fontWeight:700,fontSize:14}}>🏢 Resumen por Proveedor</div>
       <div style={{overflowX:"auto"}}>
         <table>
-          <thead><tr>
-            <th>RUT</th><th>Razón Social</th><th>Facturas</th>
-            <th>Total</th><th>Pendiente</th><th>Pagado</th>
-          </tr></thead>
+          <thead><tr><th>RUT</th><th>Razón Social</th><th>Facturas</th><th>Total</th><th>Pendiente</th><th>Pagado</th></tr></thead>
           <tbody>
             {rows.map(([rut,v])=>(
               <tr key={rut}>
@@ -895,7 +757,6 @@ function ResumenProveedores({ facturas }) {
   );
 }
 
-// --- RESUMEN CECO ---
 function ResumenCECO({ facturas }) {
   const map = {};
   facturas.forEach(f => {
@@ -903,16 +764,13 @@ function ResumenCECO({ facturas }) {
     if (!map[k]) map[k] = { total:0, pendiente:0, pagado:0, cnt:0 };
     const m = parseFloat(f["Monto Total"])||0;
     map[k].total += m; map[k].cnt++;
-    if (f["Estado"]==="Pagado") map[k].pagado += m;
-    else map[k].pendiente += m;
+    if (f["Estado"]==="Pagado") map[k].pagado += m; else map[k].pendiente += m;
   });
   const rows = Object.entries(map).sort((a,b)=>b[1].total-a[1].total);
   const maxTotal = rows[0]?.[1]?.total || 1;
   return (
     <div className="table-wrap">
-      <div style={{padding:"16px 20px",borderBottom:"1px solid var(--border)",fontWeight:700,fontSize:14}}>
-        📊 Resumen por Centro de Costo
-      </div>
+      <div style={{padding:"16px 20px",borderBottom:"1px solid var(--border)",fontWeight:700,fontSize:14}}>📊 Resumen por Centro de Costo</div>
       <div style={{padding:"20px"}}>
         {rows.map(([k,v])=>(
           <div key={k} style={{marginBottom:20}}>
@@ -921,7 +779,7 @@ function ResumenCECO({ facturas }) {
               <span style={{fontSize:13,fontFamily:"'DM Mono',monospace",color:"var(--accent2)",fontWeight:700}}>{fmt(v.total)}</span>
             </div>
             <div style={{height:8,background:"var(--bg3)",borderRadius:4,overflow:"hidden",marginBottom:4}}>
-              <div style={{height:"100%",width:`${(v.total/maxTotal)*100}%`,background:"linear-gradient(90deg,var(--accent),var(--accent2))",borderRadius:4,transition:"width 0.5s"}}/>
+              <div style={{height:"100%",width:`${(v.total/maxTotal)*100}%`,background:"linear-gradient(90deg,var(--accent),var(--accent2))",borderRadius:4}}/>
             </div>
             <div style={{display:"flex",gap:16,fontSize:11,color:"var(--text3)"}}>
               <span>{v.cnt} facturas</span>
@@ -936,7 +794,6 @@ function ResumenCECO({ facturas }) {
   );
 }
 
-// --- APP PRINCIPAL ---
 function App() {
   const [vista, setVista] = React.useState("dashboard");
   const [facturas, setFacturas] = React.useState([]);
@@ -971,19 +828,11 @@ function App() {
     try {
       const action = editando ? "updateFactura" : "addFactura";
       const payload = editando ? { ...datos, _rowIndex: editando._rowIndex } : datos;
-      const r = await fetch(APPS_SCRIPT_URL, {
-        method: "POST",
-        body: JSON.stringify({ action, ...payload })
-      });
+      const r = await fetch(APPS_SCRIPT_URL, { method:"POST", body:JSON.stringify({ action, ...payload }) });
       const d = await r.json();
-      if (d.success) {
-        showMsg("success", editando ? "Factura actualizada ✓" : "Factura agregada ✓");
-        setShowForm(false); setEditando(null);
-        cargar();
-      } else throw new Error(d.error);
-    } catch(e) {
-      showMsg("error", "Error: " + e.message);
-    }
+      if (d.success) { showMsg("success", editando ? "Factura actualizada ✓" : "Factura agregada ✓"); setShowForm(false); setEditando(null); cargar(); }
+      else throw new Error(d.error);
+    } catch(e) { showMsg("error","Error: "+e.message); }
     setSaving(false);
   }
 
@@ -992,10 +841,7 @@ function App() {
     setSaving(true);
     try {
       const hoy = new Date().toISOString().split("T")[0];
-      const r = await fetch(APPS_SCRIPT_URL, {
-        method:"POST",
-        body: JSON.stringify({ action:"updateFactura", ...f, "Estado":"Pagado", "Fecha Pago": hoy, _rowIndex: f._rowIndex })
-      });
+      const r = await fetch(APPS_SCRIPT_URL, { method:"POST", body:JSON.stringify({ action:"updateFactura", ...f, "Estado":"Pagado", "Fecha Pago":hoy, _rowIndex:f._rowIndex }) });
       const d = await r.json();
       if (d.success) { showMsg("success","Factura marcada como pagada ✓"); cargar(); }
       else throw new Error(d.error);
@@ -1006,51 +852,20 @@ function App() {
   async function handlePagarMultiple(seleccionadas, datos) {
     setSaving(true);
     try {
-      // Subir comprobante a Drive si hay archivo
       let linkComprobante = "";
       if (datos.comprobante) {
-        const rDrive = await fetch(APPS_SCRIPT_URL, {
-          method: "POST",
-          body: JSON.stringify({
-            action: "subirComprobante",
-            base64: datos.comprobante.base64,
-            nombre: datos.comprobante.nombre,
-            tipo: datos.comprobante.tipo,
-            folderId: "1bLyoGEtgHh10YVlKyBm9_lt18hCaplsw"
-          })
-        });
+        const rDrive = await fetch(APPS_SCRIPT_URL, { method:"POST", body:JSON.stringify({ action:"subirComprobante", base64:datos.comprobante.base64, nombre:datos.comprobante.nombre, tipo:datos.comprobante.tipo, folderId:"1bLyoGEtgHh10YVlKyBm9_lt18hCaplsw" }) });
         const dDrive = await rDrive.json();
         if (dDrive.success) linkComprobante = dDrive.url;
       }
-
-      // Actualizar cada factura
       for (const f of seleccionadas) {
-        await fetch(APPS_SCRIPT_URL, {
-          method: "POST",
-          body: JSON.stringify({
-            action: "updateFactura",
-            ...f,
-            "Estado": "Pagado",
-            "Fecha Pago": datos.fechaPago,
-            "Forma Pago": datos.medioPago,
-            "N° Transferencia": datos.nTransfer,
-            "Comprobante": linkComprobante,
-            _rowIndex: f._rowIndex
-          })
-        });
+        await fetch(APPS_SCRIPT_URL, { method:"POST", body:JSON.stringify({ action:"updateFactura", ...f, "Estado":"Pagado", "Fecha Pago":datos.fechaPago, "Forma Pago":datos.medioPago, "N° Transferencia":datos.nTransfer, "Comprobante":linkComprobante, _rowIndex:f._rowIndex }) });
       }
-      showMsg("success", `✓ ${seleccionadas.length} facturas marcadas como pagadas`);
+      showMsg("success",`✓ ${seleccionadas.length} facturas marcadas como pagadas`);
       cargar();
-    } catch(e) {
-      showMsg("error", "Error: " + e.message);
-    }
+    } catch(e) { showMsg("error","Error: "+e.message); }
     setSaving(false);
   }
-    { id:"dashboard", icon:"📊", label:"Dashboard" },
-    { id:"facturas", icon:"📄", label:"Facturas" },
-    { id:"proveedores", icon:"🏢", label:"Proveedores" },
-    { id:"ceco", icon:"📈", label:"Centro de Costo" },
-  ];
 
   return (
     <div className="app">
@@ -1060,71 +875,44 @@ function App() {
           <div className="logo-sub">Control de Facturas</div>
         </div>
         <nav className="nav">
-          {navItems.map(n=>(
+          {NAV_ITEMS.map(n=>(
             <div key={n.id} className={`nav-item${vista===n.id?" active":""}`} onClick={()=>setVista(n.id)}>
-              <span className="nav-icon">{n.icon}</span>
-              {n.label}
+              <span className="nav-icon">{n.icon}</span>{n.label}
             </div>
           ))}
         </nav>
         <div style={{padding:"16px 20px",borderTop:"1px solid var(--border)"}}>
-          <button className="btn btn-secondary" style={{width:"100%",justifyContent:"center"}} onClick={cargar}>
-            🔄 Actualizar
-          </button>
+          <button className="btn btn-secondary" style={{width:"100%",justifyContent:"center"}} onClick={cargar}>🔄 Actualizar</button>
         </div>
       </div>
-
       <div className="main">
         {msg && (
           <div className={`alert ${msg.type==="error"?"alert-red":"alert-green"}`} style={{position:"fixed",top:20,right:20,zIndex:300,minWidth:280}}>
             {msg.text}
           </div>
         )}
-
         <div className="page-header">
           <div>
-            <div className="page-title">
-              {navItems.find(n=>n.id===vista)?.icon} {navItems.find(n=>n.id===vista)?.label}
-            </div>
+            <div className="page-title">{NAV_ITEMS.find(n=>n.id===vista)?.icon} {NAV_ITEMS.find(n=>n.id===vista)?.label}</div>
             <div className="page-sub">{facturas.length} facturas cargadas</div>
           </div>
-          {vista === "facturas" && (
-            <button className="btn btn-primary" onClick={()=>{setEditando(null);setShowForm(true);}}>
-              + Nueva Factura
-            </button>
+          {vista==="facturas" && (
+            <button className="btn btn-primary" onClick={()=>{setEditando(null);setShowForm(true);}}>+ Nueva Factura</button>
           )}
         </div>
-
         {loading ? (
-          <div className="loader">
-            <div className="spinner"/>
-            <span>Cargando datos desde Google Sheets...</span>
-          </div>
+          <div className="loader"><div className="spinner"/><span>Cargando datos desde Google Sheets...</span></div>
         ) : (
           <>
-            {vista === "dashboard" && <Dashboard facturas={facturas}/>}
-            {vista === "facturas" && (
-              <TablaFacturas
-                facturas={facturas}
-                onEdit={f=>{setEditando(f);setShowForm(true);}}
-                onPagar={handlePagar}
-                onPagarMultiple={handlePagarMultiple}
-                onDelete={()=>{}}
-              />
-            )}
-            {vista === "proveedores" && <ResumenProveedores facturas={facturas}/>}
-            {vista === "ceco" && <ResumenCECO facturas={facturas}/>}
+            {vista==="dashboard" && <Dashboard facturas={facturas}/>}
+            {vista==="facturas" && <TablaFacturas facturas={facturas} onEdit={f=>{setEditando(f);setShowForm(true);}} onPagar={handlePagar} onPagarMultiple={handlePagarMultiple}/>}
+            {vista==="proveedores" && <ResumenProveedores facturas={facturas}/>}
+            {vista==="ceco" && <ResumenCECO facturas={facturas}/>}
           </>
         )}
       </div>
-
       {showForm && (
-        <FacturaForm
-          inicial={editando}
-          onSave={handleSave}
-          onClose={()=>{setShowForm(false);setEditando(null);}}
-          loading={saving}
-        />
+        <FacturaForm inicial={editando} onSave={handleSave} onClose={()=>{setShowForm(false);setEditando(null);}} loading={saving}/>
       )}
     </div>
   );
