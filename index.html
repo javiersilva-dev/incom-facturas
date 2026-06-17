@@ -4,921 +4,856 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Control Facturas — INCOM</title>
-<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
-  :root {
-    --bg: #0f1117;
-    --bg2: #161b27;
-    --bg3: #1e2535;
-    --border: #2a3248;
-    --accent: #3b82f6;
-    --accent2: #60a5fa;
-    --green: #22c55e;
-    --yellow: #f59e0b;
-    --red: #ef4444;
-    --text: #e2e8f0;
-    --text2: #94a3b8;
-    --text3: #64748b;
-    --card: #161b27;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-  .app { display: flex; min-height: 100vh; }
-  .sidebar { width: 220px; background: var(--bg2); border-right: 1px solid var(--border); padding: 24px 0; position: fixed; height: 100vh; display: flex; flex-direction: column; z-index: 100; }
-  .main { margin-left: 220px; flex: 1; padding: 32px; min-height: 100vh; }
-  .logo { padding: 0 20px 24px; border-bottom: 1px solid var(--border); }
-  .logo-title { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: 0.5px; }
-  .logo-sub { font-size: 11px; color: var(--text3); margin-top: 2px; font-family: 'DM Mono', monospace; }
-  .nav { padding: 16px 0; flex: 1; }
-  .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 20px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text2); transition: all 0.15s; border-left: 3px solid transparent; }
-  .nav-item:hover { color: var(--text); background: var(--bg3); }
-  .nav-item.active { color: var(--accent2); background: rgba(59,130,246,0.08); border-left-color: var(--accent); }
-  .nav-icon { font-size: 16px; width: 20px; text-align: center; }
-  .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
-  .page-title { font-size: 22px; font-weight: 700; }
-  .page-sub { font-size: 13px; color: var(--text3); margin-top: 2px; }
-  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
-  .btn-primary { background: var(--accent); color: white; }
-  .btn-primary:hover { background: #2563eb; }
-  .btn-secondary { background: var(--bg3); color: var(--text2); border: 1px solid var(--border); }
-  .btn-secondary:hover { color: var(--text); border-color: var(--accent); }
-  .btn-danger { background: rgba(239,68,68,0.1); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
-  .btn-success { background: rgba(34,197,94,0.1); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
-  .btn-sm { padding: 5px 10px; font-size: 12px; }
-  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
-  .kpi-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
-  .kpi-label { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; }
-  .kpi-value { font-size: 26px; font-weight: 700; margin-top: 6px; font-family: 'DM Mono', monospace; }
-  .kpi-sub { font-size: 12px; color: var(--text3); margin-top: 4px; }
-  .kpi-red .kpi-value { color: var(--red); }
-  .kpi-yellow .kpi-value { color: var(--yellow); }
-  .kpi-green .kpi-value { color: var(--green); }
-  .kpi-blue .kpi-value { color: var(--accent2); }
-  .table-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-  .table-toolbar { display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
-  .search-box { flex: 1; min-width: 200px; display: flex; align-items: center; gap: 8px; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; }
-  .search-box input { background: none; border: none; outline: none; color: var(--text); font-size: 13px; font-family: 'DM Sans', sans-serif; width: 100%; }
-  .search-box input::placeholder { color: var(--text3); }
-  select.filter { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; color: var(--text2); font-size: 13px; font-family: 'DM Sans', sans-serif; outline: none; cursor: pointer; }
-  select.filter:focus { border-color: var(--accent); }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  thead th { padding: 12px 16px; text-align: left; font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.7px; border-bottom: 1px solid var(--border); background: var(--bg2); white-space: nowrap; }
-  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; cursor: pointer; }
-  tbody tr:hover { background: var(--bg3); }
-  tbody tr:last-child { border-bottom: none; }
-  td { padding: 12px 16px; color: var(--text2); vertical-align: middle; }
-  td.mono { font-family: 'DM Mono', monospace; font-size: 12px; }
-  .empty-state { text-align: center; padding: 60px 20px; color: var(--text3); }
-  .empty-icon { font-size: 40px; margin-bottom: 12px; }
-  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
-  .badge-red { background: rgba(239,68,68,0.12); color: var(--red); }
-  .badge-yellow { background: rgba(245,158,11,0.12); color: var(--yellow); }
-  .badge-green { background: rgba(34,197,94,0.12); color: var(--green); }
-  .badge-blue { background: rgba(59,130,246,0.12); color: var(--accent2); }
-  .badge-gray { background: rgba(100,116,139,0.12); color: var(--text3); }
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
-  .modal { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 780px; max-height: 90vh; overflow-y: auto; }
-  .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--bg2); z-index: 1; }
-  .modal-title { font-size: 16px; font-weight: 700; }
-  .modal-body { padding: 24px; }
-  .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
-  .close-btn { background: none; border: none; color: var(--text3); font-size: 20px; cursor: pointer; padding: 4px 8px; border-radius: 6px; }
-  .close-btn:hover { background: var(--bg3); color: var(--text); }
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .form-group { display: flex; flex-direction: column; gap: 6px; }
-  .form-group.full { grid-column: 1/-1; }
-  label { font-size: 12px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; }
-  input, select, textarea { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; color: var(--text); font-size: 13px; font-family: 'DM Sans', sans-serif; outline: none; transition: border 0.15s; width: 100%; }
-  input:focus, select:focus, textarea:focus { border-color: var(--accent); }
-  input::placeholder { color: var(--text3); }
-  .section-title { font-size: 12px; font-weight: 700; color: var(--accent2); text-transform: uppercase; letter-spacing: 1px; padding-bottom: 10px; border-bottom: 1px solid var(--border); margin-bottom: 4px; grid-column: 1/-1; }
-  .calculated { background: rgba(59,130,246,0.05); border-color: rgba(59,130,246,0.3); color: var(--accent2); }
-  .resumen-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
-  .resumen-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
-  .resumen-card h3 { font-size: 13px; font-weight: 600; color: var(--text2); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-  .resumen-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border); }
-  .resumen-row:last-child { border-bottom: none; }
-  .resumen-label { font-size: 12px; color: var(--text3); }
-  .resumen-val { font-size: 13px; font-weight: 600; font-family: 'DM Mono', monospace; }
-  .loader { display: flex; align-items: center; justify-content: center; padding: 60px; gap: 12px; color: var(--text3); }
-  .spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .alert { padding: 12px 16px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; }
-  .alert-red { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; }
-  .alert-green { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); color: #86efac; }
-  .alertas-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
-  .alerta-item { display: flex; align-items: center; gap: 12px; background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.2); border-radius: 10px; padding: 12px 16px; }
-  .alerta-item.rojo { background: rgba(239,68,68,0.06); border-color: rgba(239,68,68,0.2); }
-  .alerta-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--yellow); flex-shrink: 0; }
-  .alerta-dot.rojo { background: var(--red); }
-  .alerta-info { flex: 1; }
-  .alerta-proveedor { font-size: 13px; font-weight: 600; color: var(--text); }
-  .alerta-detalle { font-size: 12px; color: var(--text3); margin-top: 2px; }
-  .alerta-monto { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 600; color: var(--yellow); }
-  .alerta-monto.rojo { color: var(--red); }
-  .pagination { display: flex; align-items: center; gap: 8px; padding: 16px 20px; justify-content: flex-end; border-top: 1px solid var(--border); }
-  .pagination span { font-size: 13px; color: var(--text3); }
-  @media (max-width: 900px) {
-    .kpi-grid { grid-template-columns: 1fr 1fr; }
-    .resumen-grid { grid-template-columns: 1fr; }
-  }
+/* ── RESET & BASE ────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --azul:       #1A3FA4;
+  --azul-dark:  #122d7a;
+  --azul-light: #2554d4;
+  --rojo:       #C0001A;
+  --rojo-light: #E8192C;
+  --bg:         #0d1117;
+  --bg2:        #161b22;
+  --bg3:        #1c2330;
+  --bg4:        #21262d;
+  --border:     #30363d;
+  --text:       #e6edf3;
+  --text2:      #8b949e;
+  --text3:      #484f58;
+  --green:      #2ea043;
+  --green-bg:   #0d2e1a;
+  --orange:     #d29922;
+  --orange-bg:  #2d1f00;
+  --red-bg:     #2d0a0e;
+  --pending-bg: #0d1f3a;
+  --radius:     8px;
+  --shadow:     0 4px 24px rgba(0,0,0,.5);
+}
+html{font-size:14px;height:100%}
+body{
+  font-family:'Segoe UI',system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100%;
+  line-height:1.5;
+}
+input,select,textarea,button{font-family:inherit;font-size:inherit}
+button{cursor:pointer;border:none;outline:none}
+a{color:var(--azul-light);text-decoration:none}
+
+/* ── HEADER ──────────────────────────────────────────────── */
+.header{
+  background:linear-gradient(135deg,var(--azul-dark) 0%,var(--azul) 100%);
+  padding:0 24px;
+  height:56px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:2px solid var(--rojo);
+  position:sticky;top:0;z-index:100;
+  box-shadow:0 2px 16px rgba(0,0,0,.6);
+}
+.header-brand{display:flex;align-items:center;gap:12px}
+.header-logo{
+  width:36px;height:36px;border-radius:6px;
+  background:var(--rojo);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:16px;color:#fff;letter-spacing:-1px;
+}
+.header-title{font-size:16px;font-weight:700;letter-spacing:.3px}
+.header-sub{font-size:11px;color:rgba(255,255,255,.6);margin-top:1px}
+.header-actions{display:flex;gap:8px}
+
+/* ── LAYOUT ──────────────────────────────────────────────── */
+.main{max-width:1400px;margin:0 auto;padding:20px 20px 40px}
+
+/* ── BOTONES ─────────────────────────────────────────────── */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 16px;border-radius:var(--radius);
+  font-weight:600;font-size:13px;transition:all .15s;
+}
+.btn-primary{background:var(--azul);color:#fff}
+.btn-primary:hover{background:var(--azul-light)}
+.btn-success{background:var(--green);color:#fff}
+.btn-success:hover{background:#3fb950}
+.btn-danger{background:var(--rojo);color:#fff}
+.btn-danger:hover{background:var(--rojo-light)}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--bg3);color:var(--text)}
+.btn-sm{padding:5px 10px;font-size:12px}
+.btn-icon{padding:6px 8px}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* ── KPI CARDS ───────────────────────────────────────────── */
+.kpi-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;margin-bottom:20px;
+}
+.kpi{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:16px 20px;
+  position:relative;overflow:hidden;
+}
+.kpi::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+}
+.kpi-pending::before{background:var(--azul)}
+.kpi-paid::before{background:var(--green)}
+.kpi-overdue::before{background:var(--rojo)}
+.kpi-soon::before{background:var(--orange)}
+.kpi-label{font-size:11px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
+.kpi-value{font-size:22px;font-weight:800;line-height:1.2}
+.kpi-pending .kpi-value{color:#60a5fa}
+.kpi-paid    .kpi-value{color:#4ade80}
+.kpi-overdue .kpi-value{color:var(--rojo-light)}
+.kpi-soon    .kpi-value{color:var(--orange)}
+.kpi-sub{font-size:11px;color:var(--text3);margin-top:4px}
+
+/* ── TOOLBAR ─────────────────────────────────────────────── */
+.toolbar{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:12px 16px;
+  display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+  margin-bottom:12px;
+}
+.search-wrap{position:relative;flex:1;min-width:200px}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3)}
+.search-input{
+  width:100%;background:var(--bg3);border:1px solid var(--border);
+  border-radius:6px;padding:7px 10px 7px 34px;color:var(--text);
+  transition:border-color .15s;
+}
+.search-input:focus{outline:none;border-color:var(--azul-light)}
+select.filter-select{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:6px;padding:7px 10px;color:var(--text);
+  min-width:140px;
+}
+select.filter-select:focus{outline:none;border-color:var(--azul-light)}
+
+/* ── TABLA ───────────────────────────────────────────────── */
+.table-wrap{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;
+}
+.table-header{
+  padding:12px 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;
+}
+.table-header-left{display:flex;align-items:center;gap:10px}
+.table-title{font-weight:700;font-size:14px}
+.badge{
+  padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;
+  background:var(--bg3);color:var(--text2);
+}
+table{width:100%;border-collapse:collapse}
+thead th{
+  padding:10px 12px;text-align:left;
+  font-size:11px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.6px;color:var(--text2);
+  background:var(--bg3);border-bottom:1px solid var(--border);
+  white-space:nowrap;
+}
+tbody tr{border-bottom:1px solid var(--border);transition:background .1s}
+tbody tr:hover{background:var(--bg3)}
+tbody tr:last-child{border-bottom:none}
+td{padding:10px 12px;font-size:13px;vertical-align:middle}
+.td-num{text-align:right;font-variant-numeric:tabular-nums}
+.td-actions{display:flex;gap:4px;justify-content:flex-end}
+
+/* ── ESTADOS ─────────────────────────────────────────────── */
+.estado-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;
+}
+.estado-Pendiente{background:var(--pending-bg);color:#60a5fa;border:1px solid #1d4ed8}
+.estado-Pagado   {background:var(--green-bg);color:#4ade80;border:1px solid var(--green)}
+.estado-Vencido  {background:var(--red-bg);color:var(--rojo-light);border:1px solid var(--rojo)}
+.estado-Anulado  {background:var(--bg4);color:var(--text3);border:1px solid var(--border)}
+
+/* ── MODAL ───────────────────────────────────────────────── */
+.overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.7);
+  z-index:200;display:flex;align-items:center;justify-content:center;
+  padding:20px;
+}
+.modal{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:12px;width:100%;max-width:640px;
+  max-height:90vh;overflow-y:auto;
+  box-shadow:var(--shadow);
+}
+.modal-header{
+  padding:16px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--bg3);border-radius:12px 12px 0 0;
+}
+.modal-title{font-size:15px;font-weight:700}
+.modal-body{padding:20px}
+.modal-footer{
+  padding:14px 20px;border-top:1px solid var(--border);
+  display:flex;justify-content:flex-end;gap:8px;
+  background:var(--bg3);border-radius:0 0 12px 12px;
+}
+.close-btn{
+  background:none;border:none;color:var(--text2);
+  font-size:20px;line-height:1;padding:4px 8px;border-radius:4px;
+}
+.close-btn:hover{background:var(--bg4);color:var(--text)}
+
+/* ── FORM ────────────────────────────────────────────────── */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-grid.cols-3{grid-template-columns:1fr 1fr 1fr}
+.form-full{grid-column:1/-1}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.5px}
+.field input,.field select,.field textarea{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:6px;padding:8px 10px;color:var(--text);
+  transition:border-color .15s;
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+  outline:none;border-color:var(--azul-light);
+}
+.field input[readonly]{color:var(--text2);background:var(--bg4)}
+.field textarea{resize:vertical;min-height:60px}
+.monto-row{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;
+  padding:12px;background:var(--bg3);border-radius:6px;
+  border:1px solid var(--border);
+}
+.monto-item{display:flex;flex-direction:column;gap:3px}
+.monto-label{font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase}
+.monto-val{font-size:15px;font-weight:700;color:var(--text)}
+.monto-val.total{color:#60a5fa;font-size:17px}
+
+/* ── PAGO MODAL ──────────────────────────────────────────── */
+.pago-info{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:6px;padding:12px 16px;margin-bottom:14px;
+}
+.pago-info-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.pago-info-row:last-child{margin-bottom:0}
+.pago-info-label{font-size:12px;color:var(--text2)}
+.pago-info-val{font-size:13px;font-weight:700}
+
+/* ── EMPTY & LOADING ─────────────────────────────────────── */
+.empty{padding:60px 20px;text-align:center;color:var(--text3)}
+.empty svg{margin:0 auto 12px;display:block;opacity:.3}
+.empty p{font-size:15px;margin-bottom:6px;color:var(--text2)}
+.empty small{font-size:12px}
+.loading{padding:60px;text-align:center;color:var(--text3)}
+.spinner{
+  width:32px;height:32px;border:3px solid var(--border);
+  border-top-color:var(--azul-light);border-radius:50%;
+  animation:spin .8s linear infinite;margin:0 auto 12px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── TOAST ───────────────────────────────────────────────── */
+.toast-wrap{
+  position:fixed;bottom:20px;right:20px;z-index:999;
+  display:flex;flex-direction:column;gap:8px;
+}
+.toast{
+  padding:12px 18px;border-radius:8px;font-size:13px;font-weight:600;
+  box-shadow:var(--shadow);animation:slideIn .2s ease;
+  max-width:320px;
+}
+.toast-ok  {background:#1a4a1e;border:1px solid var(--green);color:#4ade80}
+.toast-err {background:#3d0a0e;border:1px solid var(--rojo);color:var(--rojo-light)}
+.toast-info{background:#0d1f3a;border:1px solid var(--azul);color:#60a5fa}
+@keyframes slideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── VENC WARNING ────────────────────────────────────────── */
+tr.row-vencida td:first-child{border-left:3px solid var(--rojo)}
+tr.row-proxima td:first-child{border-left:3px solid var(--orange)}
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+@media(max-width:900px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .form-grid{grid-template-columns:1fr}
+  .form-grid.cols-3{grid-template-columns:1fr}
+  table{display:block;overflow-x:auto}
+}
+@media(max-width:600px){
+  .kpi-grid{grid-template-columns:1fr 1fr}
+  .toolbar{flex-direction:column;align-items:stretch}
+  .header-title{font-size:14px}
+}
 </style>
 </head>
 <body>
-<div id="root"></div>
-<script type="text/babel">
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyORdKb03w9pyEpuja-3zfYyllZn7bc9pAQwA3IZnUhWYXiGIqYXSJz-ESTIGYP1I3DFw/exec";
 
-const ESTADOS = ["Pendiente","Pagado","Vencida","Anulada"];
-const CONDICION_PAGO = ["5 días","15 días","30 días","45 días","60 días","Contado"];
-const MEDIO_PAGO = ["Transferencia","Efectivo","Tarjeta de Crédito","Caja Chica"];
-const TIPO_DOC = ["Factura","Boleta","Nota de Crédito","Nota de Débito","Liquidación"];
-const TIPO_COMPRA = ["Bien","Servicio","Combustible","Repuesto","Neumático","Otro"];
+<!-- HEADER -->
+<header class="header">
+  <div class="header-brand">
+    <div class="header-logo">IC</div>
+    <div>
+      <div class="header-title">Control Pago Facturas</div>
+      <div class="header-sub">INCOM · Jofre y Jofre Ltda.</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-ghost btn-sm" onclick="exportCSV()">↓ CSV</button>
+    <button class="btn btn-primary" onclick="openModal('add')">+ Nueva Factura</button>
+  </div>
+</header>
 
-const NAV_ITEMS = [
-  { id:"dashboard", icon:"📊", label:"Dashboard" },
-  { id:"facturas",  icon:"📄", label:"Facturas" },
-  { id:"proveedores", icon:"🏢", label:"Proveedores" },
-  { id:"ceco",     icon:"📈", label:"Centro de Costo" },
-];
+<main class="main">
+
+  <!-- KPIs -->
+  <div class="kpi-grid" id="kpiGrid">
+    <div class="kpi kpi-pending">
+      <div class="kpi-label">Total Pendiente</div>
+      <div class="kpi-value" id="kpiPendiente">—</div>
+      <div class="kpi-sub">Por pagar</div>
+    </div>
+    <div class="kpi kpi-paid">
+      <div class="kpi-label">Total Pagado</div>
+      <div class="kpi-value" id="kpiPagado">—</div>
+      <div class="kpi-sub">Este período</div>
+    </div>
+    <div class="kpi kpi-overdue">
+      <div class="kpi-label">Vencidas</div>
+      <div class="kpi-value" id="kpiVencidas">—</div>
+      <div class="kpi-sub">Sin pagar y vencidas</div>
+    </div>
+    <div class="kpi kpi-soon">
+      <div class="kpi-label">Por Vencer</div>
+      <div class="kpi-value" id="kpiProximas">—</div>
+      <div class="kpi-sub">Próximos 7 días</div>
+    </div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <div class="search-wrap">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input class="search-input" type="text" id="searchInput" placeholder="Buscar proveedor, N° factura, descripción…" oninput="filterTable()"/>
+    </div>
+    <select class="filter-select" id="filterEstado" onchange="filterTable()">
+      <option value="">Todos los estados</option>
+      <option value="Pendiente">Pendiente</option>
+      <option value="Pagado">Pagado</option>
+      <option value="Vencido">Vencido</option>
+      <option value="Anulado">Anulado</option>
+    </select>
+    <select class="filter-select" id="filterArea" onchange="filterTable()">
+      <option value="">Todas las áreas</option>
+    </select>
+    <select class="filter-select" id="filterMes" onchange="filterTable()">
+      <option value="">Todos los meses</option>
+    </select>
+    <button class="btn btn-ghost btn-sm" onclick="clearFilters()">✕ Limpiar</button>
+  </div>
+
+  <!-- TABLA -->
+  <div class="table-wrap">
+    <div class="table-header">
+      <div class="table-header-left">
+        <span class="table-title">Facturas</span>
+        <span class="badge" id="countBadge">0</span>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="loadData()">↻ Actualizar</button>
+    </div>
+    <div id="tableContainer">
+      <div class="loading"><div class="spinner"></div>Cargando facturas…</div>
+    </div>
+  </div>
+</main>
+
+<!-- ── MODAL FACTURA ─────────────────────────────────────── -->
+<div class="overlay" id="modalFactura" style="display:none">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">Nueva Factura</span>
+      <button class="close-btn" onclick="closeModal('modalFactura')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="fId"/>
+      <div class="form-grid">
+        <div class="field">
+          <label>Fecha Recepción</label>
+          <input type="date" id="fFechaRec"/>
+        </div>
+        <div class="field">
+          <label>N° Factura / Boleta</label>
+          <input type="text" id="fNFactura" placeholder="Ej: 123456"/>
+        </div>
+        <div class="field form-full">
+          <label>Proveedor</label>
+          <input type="text" id="fProveedor" placeholder="Nombre del proveedor"/>
+        </div>
+        <div class="field">
+          <label>RUT Proveedor</label>
+          <input type="text" id="fRut" placeholder="12.345.678-9"/>
+        </div>
+        <div class="field">
+          <label>N° OC (opcional)</label>
+          <input type="text" id="fNOC" placeholder="OC-XXXX"/>
+        </div>
+        <div class="field form-full">
+          <label>Descripción</label>
+          <input type="text" id="fDesc" placeholder="Descripción del servicio o producto"/>
+        </div>
+        <div class="field">
+          <label>Área / Centro Costo</label>
+          <select id="fArea">
+            <option value="">— Seleccionar —</option>
+            <option>Operaciones</option>
+            <option>Taller</option>
+            <option>Faena</option>
+            <option>Administración</option>
+            <option>Prevención</option>
+            <option>Gerencia</option>
+            <option>Otro</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Condición de Pago (días)</label>
+          <select id="fCondicion">
+            <option value="0">Contado</option>
+            <option value="5">5 días</option>
+            <option value="15">15 días</option>
+            <option value="30" selected>30 días</option>
+            <option value="45">45 días</option>
+            <option value="60">60 días</option>
+            <option value="90">90 días</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Montos -->
+      <div style="margin:14px 0 6px;font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.6px">Montos</div>
+      <div class="monto-row">
+        <div class="monto-item">
+          <div class="monto-label">Neto</div>
+          <input type="number" id="fNeto" min="0" step="1" placeholder="0"
+            style="background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:6px 8px;color:var(--text);font-size:15px;font-weight:700;width:100%"
+            oninput="calcMontos()"/>
+        </div>
+        <div class="monto-item">
+          <div class="monto-label">IVA (19%)</div>
+          <div class="monto-val" id="fIva" style="padding-top:8px">$0</div>
+        </div>
+        <div class="monto-item">
+          <div class="monto-label">Total</div>
+          <div class="monto-val total" id="fTotal" style="padding-top:8px">$0</div>
+        </div>
+      </div>
+
+      <div class="form-grid" style="margin-top:14px">
+        <div class="field form-full">
+          <label>Observaciones</label>
+          <textarea id="fObs" placeholder="Comentarios adicionales…"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modalFactura')">Cancelar</button>
+      <button class="btn btn-primary" id="btnGuardar" onclick="saveFactura()">Guardar Factura</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL PAGO ────────────────────────────────────────── -->
+<div class="overlay" id="modalPago" style="display:none">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-header">
+      <span class="modal-title">Registrar Pago</span>
+      <button class="close-btn" onclick="closeModal('modalPago')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="pago-info">
+        <div class="pago-info-row">
+          <span class="pago-info-label">Proveedor</span>
+          <span class="pago-info-val" id="pInfoProv">—</span>
+        </div>
+        <div class="pago-info-row">
+          <span class="pago-info-label">N° Factura</span>
+          <span class="pago-info-val" id="pInfoNFac">—</span>
+        </div>
+        <div class="pago-info-row">
+          <span class="pago-info-label">Monto Total</span>
+          <span class="pago-info-val" id="pInfoMonto" style="color:#60a5fa">—</span>
+        </div>
+      </div>
+      <input type="hidden" id="pId"/>
+      <div class="form-grid">
+        <div class="field">
+          <label>Fecha de Pago</label>
+          <input type="date" id="pFechaPago"/>
+        </div>
+        <div class="field">
+          <label>Medio de Pago</label>
+          <select id="pMedio">
+            <option value="Transferencia">Transferencia</option>
+            <option value="Cheque">Cheque</option>
+            <option value="Efectivo">Efectivo</option>
+            <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+            <option value="Caja Chica">Caja Chica</option>
+          </select>
+        </div>
+        <div class="field form-full">
+          <label>Observaciones (opcional)</label>
+          <input type="text" id="pObs" placeholder="N° transferencia, banco, etc."/>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modalPago')">Cancelar</button>
+      <button class="btn btn-success" onclick="confirmarPago()">✓ Confirmar Pago</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbynWuOmvEvX7LOqmizTRc6ixoKWimD741W_4ZLW_HHdSwxyw7Qkr9ckQi4xzWE8u3vrAA/exec';
+
+// ── ESTADO ──────────────────────────────────────────────────
+let allFacturas = [];
+let filtered    = [];
+
+// ── INIT ────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('fFechaRec').value = today();
+  document.getElementById('pFechaPago').value = today();
+  loadData();
+});
+
+// ── CARGA DE DATOS ───────────────────────────────────────────
+function loadData() {
+  document.getElementById('tableContainer').innerHTML =
+    '<div class="loading"><div class="spinner"></div>Cargando facturas…</div>';
+
+  gasGet('getAll', function(res) {
+    if (res.error) { toast('Error al cargar: ' + res.error, 'err'); return; }
+    allFacturas = res.facturas || [];
+    updateVencidos();
+    populateFilters();
+    filterTable();
+    loadStats();
+  });
+}
+
+function loadStats() {
+  gasGet('getStats', function(res) {
+    if (res.error) return;
+    document.getElementById('kpiPendiente').textContent = '$' + fmt(res.totalPendiente);
+    document.getElementById('kpiPagado').textContent    = '$' + fmt(res.totalPagado);
+    document.getElementById('kpiVencidas').textContent  = res.vencidas;
+    document.getElementById('kpiProximas').textContent  = res.porVencer;
+  });
+}
+
+// ── MARCAR VENCIDAS ──────────────────────────────────────────
+function updateVencidos() {
+  const hoy = new Date(); hoy.setHours(0,0,0,0);
+  allFacturas.forEach(f => {
+    if (f.estado === 'Pendiente' && f.fechaVenc) {
+      const v = new Date(f.fechaVenc);
+      if (v < hoy) f.estado = 'Vencido';
+    }
+  });
+}
+
+// ── FILTROS ─────────────────────────────────────────────────
+function populateFilters() {
+  const areas = [...new Set(allFacturas.map(f => f.area).filter(Boolean))].sort();
+  const selA  = document.getElementById('filterArea');
+  const curA  = selA.value;
+  selA.innerHTML = '<option value="">Todas las áreas</option>';
+  areas.forEach(a => { selA.innerHTML += `<option value="${a}">${a}</option>`; });
+  selA.value = curA;
+
+  const meses = [...new Set(allFacturas.map(f => f.fechaRecepcion ? f.fechaRecepcion.substring(0,7) : '').filter(Boolean))].sort().reverse();
+  const selM  = document.getElementById('filterMes');
+  const curM  = selM.value;
+  selM.innerHTML = '<option value="">Todos los meses</option>';
+  meses.forEach(m => { selM.innerHTML += `<option value="${m}">${formatMes(m)}</option>`; });
+  selM.value = curM;
+}
+
+function filterTable() {
+  const q      = document.getElementById('searchInput').value.toLowerCase();
+  const estado = document.getElementById('filterEstado').value;
+  const area   = document.getElementById('filterArea').value;
+  const mes    = document.getElementById('filterMes').value;
+
+  filtered = allFacturas.filter(f => {
+    const txt = [f.proveedor, f.nFactura, f.descripcion, f.rutProveedor, f.nOC].join(' ').toLowerCase();
+    if (q      && !txt.includes(q))                        return false;
+    if (estado && f.estado !== estado)                     return false;
+    if (area   && f.area   !== area)                       return false;
+    if (mes    && !(f.fechaRecepcion || '').startsWith(mes)) return false;
+    return true;
+  });
+
+  document.getElementById('countBadge').textContent = filtered.length;
+  renderTable();
+}
+
+function clearFilters() {
+  document.getElementById('searchInput').value   = '';
+  document.getElementById('filterEstado').value  = '';
+  document.getElementById('filterArea').value    = '';
+  document.getElementById('filterMes').value     = '';
+  filterTable();
+}
+
+// ── RENDER TABLA ─────────────────────────────────────────────
+function renderTable() {
+  const hoy   = new Date(); hoy.setHours(0,0,0,0);
+  const en7   = new Date(hoy); en7.setDate(hoy.getDate()+7);
+
+  if (!filtered.length) {
+    document.getElementById('tableContainer').innerHTML = `
+      <div class="empty">
+        <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2z"/>
+        </svg>
+        <p>No se encontraron facturas</p>
+        <small>Ajusta los filtros o agrega una nueva factura</small>
+      </div>`;
+    return;
+  }
+
+  let html = `<table>
+    <thead><tr>
+      <th>ID</th><th>Fecha Rec.</th><th>Proveedor</th><th>N° Factura</th>
+      <th>Área</th><th>Monto Neto</th><th>Total</th>
+      <th>Vencimiento</th><th>Estado</th><th>Medio Pago</th><th style="text-align:right">Acciones</th>
+    </tr></thead><tbody>`;
+
+  filtered.forEach(f => {
+    const venc    = f.fechaVenc ? new Date(f.fechaVenc) : null;
+    const rowCls  = f.estado === 'Vencido'   ? 'row-vencida'
+                  : (venc && f.estado === 'Pendiente' && venc <= en7) ? 'row-proxima' : '';
+    const estadoCls = 'estado-' + (f.estado || 'Pendiente').replace(/\s/g,'');
+
+    html += `<tr class="${rowCls}">
+      <td style="color:var(--text3);font-size:11px">${esc(f.id)}</td>
+      <td>${f.fechaRecepcion || '—'}</td>
+      <td><strong>${esc(f.proveedor)}</strong>${f.rutProveedor ? `<br><span style="font-size:11px;color:var(--text3)">${esc(f.rutProveedor)}</span>` : ''}</td>
+      <td>${esc(f.nFactura) || '—'}${f.nOC ? `<br><span style="font-size:11px;color:var(--text3)">OC: ${esc(f.nOC)}</span>` : ''}</td>
+      <td>${esc(f.area) || '—'}</td>
+      <td class="td-num">$${fmt(f.montoNeto)}</td>
+      <td class="td-num" style="font-weight:700">$${fmt(f.montoTotal)}</td>
+      <td>${f.fechaVenc || '—'}</td>
+      <td><span class="estado-badge ${estadoCls}">${f.estado || 'Pendiente'}</span></td>
+      <td style="font-size:12px;color:var(--text2)">${esc(f.medioPago) || (f.estado === 'Pagado' ? '—' : '')}</td>
+      <td class="td-actions">
+        ${f.estado !== 'Pagado' && f.estado !== 'Anulado'
+          ? `<button class="btn btn-success btn-sm btn-icon" title="Registrar pago" onclick='openPago(${JSON.stringify(f)})'>✓</button>`
+          : ''}
+        <button class="btn btn-ghost btn-sm btn-icon" title="Editar" onclick='openModal("edit",${JSON.stringify(f)})'>✎</button>
+        <button class="btn btn-danger btn-sm btn-icon" title="Eliminar" onclick="deleteFactura('${f.id}')">✕</button>
+      </td>
+    </tr>`;
+  });
+
+  html += '</tbody></table>';
+  document.getElementById('tableContainer').innerHTML = html;
+}
+
+// ── MODAL FACTURA ────────────────────────────────────────────
+function openModal(mode, f) {
+  const isEdit = mode === 'edit';
+  document.getElementById('modalTitle').textContent = isEdit ? 'Editar Factura' : 'Nueva Factura';
+  document.getElementById('btnGuardar').textContent = isEdit ? 'Guardar Cambios' : 'Guardar Factura';
+
+  document.getElementById('fId').value        = f ? f.id           : '';
+  document.getElementById('fFechaRec').value  = f ? f.fechaRecepcion : today();
+  document.getElementById('fNFactura').value  = f ? f.nFactura      : '';
+  document.getElementById('fProveedor').value = f ? f.proveedor     : '';
+  document.getElementById('fRut').value       = f ? f.rutProveedor  : '';
+  document.getElementById('fNOC').value       = f ? f.nOC           : '';
+  document.getElementById('fDesc').value      = f ? f.descripcion   : '';
+  document.getElementById('fArea').value      = f ? f.area          : '';
+  document.getElementById('fCondicion').value = f ? f.condicionPago : '30';
+  document.getElementById('fNeto').value      = f ? f.montoNeto     : '';
+  document.getElementById('fObs').value       = f ? f.observaciones : '';
+  calcMontos();
+
+  document.getElementById('modalFactura').style.display = 'flex';
+}
+
+function closeModal(id) {
+  document.getElementById(id).style.display = 'none';
+}
+
+function calcMontos() {
+  const neto  = parseFloat(document.getElementById('fNeto').value) || 0;
+  const iva   = Math.round(neto * 0.19);
+  const total = neto + iva;
+  document.getElementById('fIva').textContent   = '$' + fmt(iva);
+  document.getElementById('fTotal').textContent = '$' + fmt(total);
+}
+
+function saveFactura() {
+  const id        = document.getElementById('fId').value;
+  const proveedor = document.getElementById('fProveedor').value.trim();
+  const neto      = document.getElementById('fNeto').value;
+
+  if (!proveedor)          { toast('Ingresa el nombre del proveedor', 'err'); return; }
+  if (!neto || neto <= 0)  { toast('Ingresa el monto neto', 'err'); return; }
+
+  const fechaRec = document.getElementById('fFechaRec').value;
+  const condicion = document.getElementById('fCondicion').value;
+
+  const params = {
+    action        : id ? 'update' : 'add',
+    id            : id,
+    fechaRecepcion: fechaRec,
+    nFactura      : document.getElementById('fNFactura').value.trim(),
+    proveedor,
+    rutProveedor  : document.getElementById('fRut').value.trim(),
+    nOC           : document.getElementById('fNOC').value.trim(),
+    descripcion   : document.getElementById('fDesc').value.trim(),
+    area          : document.getElementById('fArea').value,
+    condicionPago : condicion,
+    fechaVencimiento: calcVencDate(fechaRec, condicion),
+    montoNeto     : neto,
+    observaciones : document.getElementById('fObs').value.trim()
+  };
+
+  const btn = document.getElementById('btnGuardar');
+  btn.disabled = true; btn.textContent = 'Guardando…';
+
+  gasPost(params, function(res) {
+    btn.disabled = false; btn.textContent = id ? 'Guardar Cambios' : 'Guardar Factura';
+    if (res.error) { toast('Error: ' + res.error, 'err'); return; }
+    toast(id ? 'Factura actualizada' : 'Factura registrada correctamente', 'ok');
+    closeModal('modalFactura');
+    loadData();
+  });
+}
+
+// ── MODAL PAGO ───────────────────────────────────────────────
+function openPago(f) {
+  document.getElementById('pId').value          = f.id;
+  document.getElementById('pInfoProv').textContent  = f.proveedor;
+  document.getElementById('pInfoNFac').textContent  = f.nFactura || '—';
+  document.getElementById('pInfoMonto').textContent = '$' + fmt(f.montoTotal);
+  document.getElementById('pFechaPago').value    = today();
+  document.getElementById('pObs').value          = '';
+  document.getElementById('modalPago').style.display = 'flex';
+}
+
+function confirmarPago() {
+  const id = document.getElementById('pId').value;
+  const fp = document.getElementById('pFechaPago').value;
+  const mp = document.getElementById('pMedio').value;
+
+  if (!fp) { toast('Selecciona la fecha de pago', 'err'); return; }
+
+  const params = {
+    action    : 'update',
+    id,
+    estado    : 'Pagado',
+    fechaPago : fp,
+    medioPago : mp,
+    observaciones: document.getElementById('pObs').value.trim()
+  };
+
+  gasPost(params, function(res) {
+    if (res.error) { toast('Error: ' + res.error, 'err'); return; }
+    toast('Pago registrado correctamente', 'ok');
+    closeModal('modalPago');
+    loadData();
+  });
+}
+
+// ── ELIMINAR ─────────────────────────────────────────────────
+function deleteFactura(id) {
+  if (!confirm('¿Eliminar esta factura? Esta acción no se puede deshacer.')) return;
+  gasPost({ action: 'delete', id }, function(res) {
+    if (res.error) { toast('Error: ' + res.error, 'err'); return; }
+    toast('Factura eliminada', 'info');
+    loadData();
+  });
+}
+
+// ── EXPORT CSV ───────────────────────────────────────────────
+function exportCSV() {
+  if (!filtered.length) { toast('No hay datos para exportar', 'err'); return; }
+  const headers = ['ID','Fecha Recepción','Proveedor','RUT','N° Factura','Descripción','Área','Monto Neto','IVA','Total','Condición Pago','Vencimiento','Estado','Fecha Pago','Medio Pago','N° OC','Observaciones'];
+  const rows = filtered.map(f => [
+    f.id, f.fechaRecepcion, f.proveedor, f.rutProveedor, f.nFactura,
+    f.descripcion, f.area, f.montoNeto, f.iva, f.montoTotal,
+    f.condicionPago, f.fechaVenc, f.estado, f.fechaPago, f.medioPago, f.nOC, f.observaciones
+  ].map(v => '"' + String(v||'').replace(/"/g,'""') + '"'));
+  const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+  const a   = document.createElement('a');
+  a.href    = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(csv);
+  a.download = 'facturas_incom_' + today() + '.csv';
+  a.click();
+}
+
+// ── HELPERS ──────────────────────────────────────────────────
+function gasGet(action, cb) {
+  fetch(GAS_URL + '?action=' + action + '&t=' + Date.now())
+    .then(r => r.json()).then(cb)
+    .catch(e => cb({ error: e.message }));
+}
+
+function gasPost(params, cb) {
+  fetch(GAS_URL, {
+    method : 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body   : JSON.stringify(params)
+  }).then(r => r.json()).then(cb)
+    .catch(e => cb({ error: e.message }));
+}
+
+function today() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function calcVencDate(fechaStr, dias) {
+  const d = fechaStr ? new Date(fechaStr) : new Date();
+  d.setDate(d.getDate() + parseInt(dias||30));
+  return d.toISOString().split('T')[0];
+}
 
 function fmt(n) {
-  if (!n && n !== 0) return "—";
-  return "$" + Number(n).toLocaleString("es-CL");
-}
-function fmtDate(d) {
-  if (!d) return "—";
-  if (typeof d === "string" && d.includes("/")) return d;
-  const dt = new Date(d);
-  if (isNaN(dt)) return d;
-  return dt.toLocaleDateString("es-CL");
-}
-function diasVence(venc) {
-  if (!venc) return null;
-  const hoy = new Date(); hoy.setHours(0,0,0,0);
-  let v;
-  if (typeof venc === "string" && venc.includes("/")) {
-    const [d,m,y] = venc.split("/"); v = new Date(`${y}-${m}-${d}`);
-  } else { v = new Date(venc); }
-  if (isNaN(v)) return null;
-  return Math.round((v - hoy) / 86400000);
-}
-function estadoBadge(f) {
-  const dias = diasVence(f["Vencimiento"] || f["vencimiento"]);
-  const estado = f["Estado"] || f["estado"] || "";
-  if (estado === "Pagado") return <span className="badge badge-green">✓ Pagada</span>;
-  if (estado === "Anulada") return <span className="badge badge-gray">Anulada</span>;
-  if (dias !== null && dias < 0) return <span className="badge badge-red">⚠ Vencida</span>;
-  if (dias !== null && dias <= 7) return <span className="badge badge-yellow">⏱ {dias}d</span>;
-  return <span className="badge badge-blue">Pendiente</span>;
+  return Math.round(n||0).toLocaleString('es-CL');
 }
 
-function FacturaForm({ inicial, onSave, onClose, loading }) {
-  const hoy = new Date().toISOString().split("T")[0];
-  const [f, setF] = React.useState(inicial || {
-    "Tipo Doc": "Factura", "Tipo Compra": "", "RUT Proveedor": "", "Razon Social": "",
-    "Factura": "", "Fecha Emision": hoy, "Con. de Pago": "30 días",
-    "Vencimiento": "", "Estado": "Pendiente",
-    "Monto Exento": "", "Monto Neto": "", "Monto IVA Recuperable": "", "Monto Total": "",
-    "Fecha Pago": "", "Forma Pago": "", "Centro Gasto": "", "Patente": "",
-    "N° Solicitud": "", "N° OC": "", "Area/Centro costo": "", "Subdivision/Actividad": "",
-    "Descripcion": "", "SUB CECO": "", "Solicitante": "", "Usuario": "",
-    "asociado_equipo": false
-  });
-  const [err, setErr] = React.useState("");
+function formatMes(ym) {
+  const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const [y,m] = ym.split('-');
+  return meses[parseInt(m)-1] + ' ' + y;
+}
 
-  function set(k, v) {
-    setF(prev => {
-      const next = { ...prev, [k]: v };
-      if ((k === "Fecha Emision" || k === "Con. de Pago") && next["Fecha Emision"]) {
-        const dias = parseInt(next["Con. de Pago"]) || 0;
-        if (dias > 0) {
-          const d = new Date(next["Fecha Emision"]);
-          d.setDate(d.getDate() + dias);
-          next["Vencimiento"] = d.toISOString().split("T")[0];
-          next["Dias Vencimiento"] = dias;
-        }
-      }
-      if (k === "Monto Neto") {
-        const neto = parseFloat(v) || 0;
-        const iva = Math.round(neto * 0.19);
-        const exento = parseFloat(next["Monto Exento"]) || 0;
-        next["Monto IVA Recuperable"] = iva;
-        next["Monto Total"] = neto + iva + exento;
-      }
-      if (k === "Monto Exento") {
-        const neto = parseFloat(next["Monto Neto"]) || 0;
-        const iva = Math.round(neto * 0.19);
-        const exento = parseFloat(v) || 0;
-        next["Monto Total"] = neto + iva + exento;
-      }
-      return next;
-    });
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── TOAST ────────────────────────────────────────────────────
+function toast(msg, type) {
+  const w = document.getElementById('toastWrap');
+  const t = document.createElement('div');
+  t.className = 'toast toast-' + (type||'info');
+  t.textContent = msg;
+  w.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+
+// Cerrar modales con Escape
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeModal('modalFactura');
+    closeModal('modalPago');
   }
-
-  function validate() {
-    if (!f["RUT Proveedor"]) return "RUT Proveedor es requerido";
-    if (!f["Razon Social"]) return "Razón Social es requerida";
-    if (!f["Factura"]) return "N° Factura es requerido";
-    if (!f["Monto Neto"] && !f["Monto Exento"]) return "Ingrese al menos Monto Neto o Monto Exento";
-    return "";
-  }
-
-  function handleSave() {
-    const e = validate();
-    if (e) { setErr(e); return; }
-    setErr("");
-    onSave(f);
-  }
-
-  return (
-    <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="modal">
-        <div className="modal-header">
-          <div className="modal-title">{inicial ? "Editar Factura" : "Nueva Factura"}</div>
-          <button className="close-btn" onClick={onClose}>✕</button>
-        </div>
-        <div className="modal-body">
-          {err && <div className="alert alert-red">⚠ {err}</div>}
-          <div className="form-grid">
-            <div className="section-title">📄 Datos del Documento</div>
-            <div className="form-group">
-              <label>Tipo Documento</label>
-              <select value={f["Tipo Doc"]} onChange={e=>set("Tipo Doc",e.target.value)}>
-                {TIPO_DOC.map(t=><option key={t}>{t}</option>)}
-              </select>
-            </div>
-            <div className="form-group">
-              <label>Tipo Compra</label>
-              <select value={f["Tipo Compra"]} onChange={e=>set("Tipo Compra",e.target.value)}>
-                <option value="">Seleccionar...</option>
-                {TIPO_COMPRA.map(t=><option key={t}>{t}</option>)}
-              </select>
-            </div>
-            <div className="form-group">
-              <label>RUT Proveedor *</label>
-              <input placeholder="12.345.678-9" value={f["RUT Proveedor"]} onChange={e=>set("RUT Proveedor",e.target.value)}/>
-            </div>
-            <div className="form-group">
-              <label>Razón Social *</label>
-              <input placeholder="Nombre empresa" value={f["Razon Social"]} onChange={e=>set("Razon Social",e.target.value)}/>
-            </div>
-            <div className="form-group">
-              <label>N° Factura *</label>
-              <input placeholder="000000" value={f["Factura"]} onChange={e=>set("Factura",e.target.value)}/>
-            </div>
-            <div className="form-group">
-              <label>Fecha Emisión</label>
-              <input type="date" value={f["Fecha Emision"]} onChange={e=>set("Fecha Emision",e.target.value)}/>
-            </div>
-            <div className="form-group">
-              <label>Condición de Pago</label>
-              <select value={f["Con. de Pago"]} onChange={e=>set("Con. de Pago",e.target.value)}>
-                {CONDICION_PAGO.map(t=><option key={t}>{t}</option>)}
-              </select>
-            </div>
-            <div className="form-group">
-              <label>Vencimiento (calculado)</label>
-              <input className="calculated" type="date" value={f["Vencimiento"]} onChange={e=>set("Vencimiento",e.target.value)}/>
-            </div>
-            <div className="section-title">💰 Montos</div>
-            <div className="form-group">
-              <label>Monto Exento</label>
-              <input type="number" placeholder="0" value={f["Monto Exento"]} onChange={e=>set("Monto Exento",e.target.value)}/>
-            </div>
-            <div className="form-group">
-              <label>Monto Neto *</label>
-              <input type="number" placeholder="0" value={f["Monto Neto"]} onChange={e=>set("Monto Neto",e.target.value)}/>
-            </div>
-            <div className="form-group">
-              <label>IVA Recuperable (19% auto)</label>
-              <input className="calculated" readOnly value={f["Monto IVA Recuperable"]}/>
-            </div>
-            <div className="form-group">
-              <label>Monto Total (auto)</label>
-              <input className="calculated" readOnly value={f["Monto Total"]}/>
-            </div>
-            <div className="section-title">✅ Pago</div>
-            <div className="form-group">
-              <label>Estado</label>
-              <select value={f["Estado"]} onChange={e=>set("Estado",e.target.value)}>
-                {ESTADOS.map(t=><option key={t}>{t}</option>)}
-              </select>
-            </div>
-            <div className="form-group">
-              <label>Medio de Pago</label>
-              <select value={f["Forma Pago"]} onChange={e=>set("Forma Pago",e.target.value)}>
-                <option value="">Seleccionar...</option>
-                {MEDIO_PAGO.map(t=><option key={t}>{t}</option>)}
-              </select>
-            </div>
-            <div className="form-group">
-              <label>Fecha Pago</label>
-              <input type="date" value={f["Fecha Pago"]} onChange={e=>set("Fecha Pago",e.target.value)}/>
-            </div>
-            <div className="form-group">
-              <label>Centro de Gasto</label>
-              <input placeholder="Centro" value={f["Centro Gasto"]} onChange={e=>set("Centro Gasto",e.target.value)}/>
-            </div>
-            <div className="section-title">🚛 Clasificación</div>
-            <div className="form-group full" style={{flexDirection:"row",alignItems:"center",gap:10}}>
-              <input type="checkbox" id="eq" checked={f["asociado_equipo"]} onChange={e=>set("asociado_equipo",e.target.checked)} style={{width:16,height:16}}/>
-              <label htmlFor="eq" style={{textTransform:"none",fontSize:13,cursor:"pointer"}}>¿Gasto asociado a un equipo/vehículo?</label>
-            </div>
-            {f["asociado_equipo"] && (
-              <div className="form-group">
-                <label>Patente</label>
-                <input placeholder="XXXX-XX" value={f["Patente"]} onChange={e=>set("Patente",e.target.value)}/>
-              </div>
-            )}
-            <div className="form-group">
-              <label>N° OC (Opcional)</label>
-              <input placeholder="OC-0000" value={f["N° OC"]} onChange={e=>set("N° OC",e.target.value)}/>
-            </div>
-            <div className="form-group">
-              <label>N° Solicitud</label>
-              <input value={f["N° Solicitud"]} onChange={e=>set("N° Solicitud",e.target.value)}/>
-            </div>
-            <div className="form-group">
-              <label>Área/Centro Costo</label>
-              <input value={f["Area/Centro costo"]} onChange={e=>set("Area/Centro costo",e.target.value)}/>
-            </div>
-            <div className="form-group">
-              <label>SUB CECO</label>
-              <input value={f["SUB CECO"]} onChange={e=>set("SUB CECO",e.target.value)}/>
-            </div>
-            <div className="form-group">
-              <label>Subdivisión/Actividad</label>
-              <input value={f["Subdivision/Actividad"]} onChange={e=>set("Subdivision/Actividad",e.target.value)}/>
-            </div>
-            <div className="form-group">
-              <label>Solicitante</label>
-              <input value={f["Solicitante"]} onChange={e=>set("Solicitante",e.target.value)}/>
-            </div>
-            <div className="form-group">
-              <label>Usuario</label>
-              <select value={f["Usuario"]} onChange={e=>set("Usuario",e.target.value)}>
-                <option value="">Seleccionar...</option>
-                <option>Javier</option>
-                <option>Andrea</option>
-              </select>
-            </div>
-            <div className="form-group full">
-              <label>Descripción</label>
-              <textarea rows={2} value={f["Descripcion"]} onChange={e=>set("Descripcion",e.target.value)} style={{resize:"vertical"}}/>
-            </div>
-          </div>
-        </div>
-        <div className="modal-footer">
-          <button className="btn btn-secondary" onClick={onClose}>Cancelar</button>
-          <button className="btn btn-primary" onClick={handleSave} disabled={loading}>
-            {loading ? "Guardando..." : "💾 Guardar"}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Dashboard({ facturas }) {
-  const pendientes = facturas.filter(f => (f["Estado"]||"") !== "Pagado" && (f["Estado"]||"") !== "Anulada");
-  const vencidas = pendientes.filter(f => { const d = diasVence(f["Vencimiento"]); return d !== null && d < 0; });
-  const por7 = pendientes.filter(f => { const d = diasVence(f["Vencimiento"]); return d !== null && d >= 0 && d <= 7; });
-  const pagadas = facturas.filter(f => f["Estado"] === "Pagado");
-  const totalPendiente = pendientes.reduce((a,f)=>a+(parseFloat(f["Monto Total"])||0),0);
-  const totalPagado = pagadas.reduce((a,f)=>a+(parseFloat(f["Monto Total"])||0),0);
-
-  const porProv = {};
-  pendientes.forEach(f => {
-    const k = f["Razon Social"] || f["RUT Proveedor"] || "Sin nombre";
-    porProv[k] = (porProv[k]||0) + (parseFloat(f["Monto Total"])||0);
-  });
-  const topProv = Object.entries(porProv).sort((a,b)=>b[1]-a[1]).slice(0,5);
-
-  const porCeco = {};
-  facturas.forEach(f => {
-    const k = f["Area/Centro costo"] || "Sin CECO";
-    porCeco[k] = (porCeco[k]||0) + (parseFloat(f["Monto Total"])||0);
-  });
-  const topCeco = Object.entries(porCeco).sort((a,b)=>b[1]-a[1]).slice(0,5);
-
-  const alertas = [...vencidas.map(f=>({...f,_tipo:"vencida"})), ...por7.map(f=>({...f,_tipo:"proxima"}))].slice(0,8);
-
-  return (
-    <div>
-      <div className="kpi-grid">
-        <div className="kpi-card kpi-blue">
-          <div className="kpi-label">Total Pendiente</div>
-          <div className="kpi-value">{fmt(totalPendiente)}</div>
-          <div className="kpi-sub">{pendientes.length} facturas</div>
-        </div>
-        <div className="kpi-card kpi-red">
-          <div className="kpi-label">Vencidas</div>
-          <div className="kpi-value">{vencidas.length}</div>
-          <div className="kpi-sub">{fmt(vencidas.reduce((a,f)=>a+(parseFloat(f["Monto Total"])||0),0))}</div>
-        </div>
-        <div className="kpi-card kpi-yellow">
-          <div className="kpi-label">Vencen en 7 días</div>
-          <div className="kpi-value">{por7.length}</div>
-          <div className="kpi-sub">{fmt(por7.reduce((a,f)=>a+(parseFloat(f["Monto Total"])||0),0))}</div>
-        </div>
-        <div className="kpi-card kpi-green">
-          <div className="kpi-label">Total Pagado</div>
-          <div className="kpi-value">{fmt(totalPagado)}</div>
-          <div className="kpi-sub">{pagadas.length} facturas</div>
-        </div>
-      </div>
-      {alertas.length > 0 && (
-        <div style={{marginBottom:24}}>
-          <div style={{fontSize:13,fontWeight:700,color:"var(--text2)",marginBottom:10}}>🔔 Alertas de Vencimiento</div>
-          <div className="alertas-list">
-            {alertas.map((f,i)=>{
-              const dias = diasVence(f["Vencimiento"]);
-              const esRojo = f._tipo==="vencida";
-              return (
-                <div key={i} className={`alerta-item${esRojo?" rojo":""}`}>
-                  <div className={`alerta-dot${esRojo?" rojo":""}`}/>
-                  <div className="alerta-info">
-                    <div className="alerta-proveedor">{f["Razon Social"]||f["RUT Proveedor"]}</div>
-                    <div className="alerta-detalle">Factura {f["Factura"]} · Vence {fmtDate(f["Vencimiento"])} · {esRojo?`Vencida hace ${Math.abs(dias)} días`:`Vence en ${dias} días`}</div>
-                  </div>
-                  <div className={`alerta-monto${esRojo?" rojo":""}`}>{fmt(f["Monto Total"])}</div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-      <div className="resumen-grid">
-        <div className="resumen-card">
-          <h3>🏢 Top Proveedores (pendiente)</h3>
-          {topProv.map(([k,v])=>(
-            <div key={k} className="resumen-row">
-              <span className="resumen-label" style={{maxWidth:150,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{k}</span>
-              <span className="resumen-val" style={{color:"var(--accent2)"}}>{fmt(v)}</span>
-            </div>
-          ))}
-          {topProv.length===0&&<div style={{color:"var(--text3)",fontSize:13}}>Sin datos</div>}
-        </div>
-        <div className="resumen-card">
-          <h3>📊 Top CECO (total)</h3>
-          {topCeco.map(([k,v])=>(
-            <div key={k} className="resumen-row">
-              <span className="resumen-label">{k}</span>
-              <span className="resumen-val" style={{color:"var(--green)"}}>{fmt(v)}</span>
-            </div>
-          ))}
-          {topCeco.length===0&&<div style={{color:"var(--text3)",fontSize:13}}>Sin datos</div>}
-        </div>
-        <div className="resumen-card">
-          <h3>💳 Por Medio de Pago</h3>
-          {MEDIO_PAGO.map(mp=>{
-            const total = pagadas.filter(f=>f["Forma Pago"]===mp).reduce((a,f)=>a+(parseFloat(f["Monto Total"])||0),0);
-            const cnt = pagadas.filter(f=>f["Forma Pago"]===mp).length;
-            if(!cnt) return null;
-            return (
-              <div key={mp} className="resumen-row">
-                <span className="resumen-label">{mp}</span>
-                <span className="resumen-val">{fmt(total)}</span>
-              </div>
-            );
-          })}
-          {pagadas.length===0&&<div style={{color:"var(--text3)",fontSize:13}}>Sin facturas pagadas</div>}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function exportarExcel(datos, nombre) {
-  const headers = ["Nro","Tipo Doc","Tipo Compra","RUT Proveedor","Razon Social","Factura",
-    "Fecha Emision","Con. de Pago","Vencimiento","Estado",
-    "Monto Exento","Monto Neto","Monto IVA Recuperable","Monto Total",
-    "Fecha Pago","Forma Pago","Centro Gasto","Patente","N° Solicitud","N° OC",
-    "Area/Centro costo","Subdivision/Actividad","Descripcion","SUB CECO","Solicitante","Usuario"];
-  const csvRows = [headers.join(";")];
-  datos.forEach(f => {
-    const row = headers.map(h => {
-      const val = f[h] !== undefined ? f[h] : "";
-      return `"${String(val).replace(/"/g,'""')}"`;
-    });
-    csvRows.push(row.join(";"));
-  });
-  const blob = new Blob(["\uFEFF" + csvRows.join("\n")], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url; a.download = nombre || "facturas_incom.csv"; a.click();
-  URL.revokeObjectURL(url);
-}
-
-function ModalPagoMultiple({ seleccionadas, onConfirmar, onClose, saving }) {
-  const hoy = new Date().toISOString().split("T")[0];
-  const [fechaPago, setFechaPago] = React.useState(hoy);
-  const [medioPago, setMedioPago] = React.useState("Transferencia");
-  const [nTransfer, setNTransfer] = React.useState("");
-  const [comprobante, setComprobante] = React.useState(null);
-  const [nombreArchivo, setNombreArchivo] = React.useState("");
-  const total = seleccionadas.reduce((a,f)=>a+(parseFloat(f["Monto Total"])||0),0);
-
-  function handleFile(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    setNombreArchivo(file.name);
-    const reader = new FileReader();
-    reader.onload = ev => setComprobante({ base64: ev.target.result.split(",")[1], nombre: file.name, tipo: file.type });
-    reader.readAsDataURL(file);
-  }
-
-  return (
-    <div className="modal-overlay" onClick={e=>e.target===e.currentTarget&&onClose()}>
-      <div className="modal" style={{maxWidth:560}}>
-        <div className="modal-header">
-          <div className="modal-title">💳 Registrar Pago</div>
-          <button className="close-btn" onClick={onClose}>✕</button>
-        </div>
-        <div className="modal-body">
-          <div style={{background:"var(--bg3)",borderRadius:10,padding:14,marginBottom:20}}>
-            <div style={{fontSize:12,fontWeight:700,color:"var(--text3)",marginBottom:10,textTransform:"uppercase"}}>
-              {seleccionadas.length} Facturas seleccionadas
-            </div>
-            <div style={{maxHeight:150,overflowY:"auto",display:"flex",flexDirection:"column",gap:6}}>
-              {seleccionadas.map((f,i)=>(
-                <div key={i} style={{display:"flex",justifyContent:"space-between",fontSize:13}}>
-                  <span style={{color:"var(--text2)"}}>{f["Razon Social"]||"—"} · Fact. {f["Factura"]}</span>
-                  <span style={{fontFamily:"'DM Mono',monospace",color:"var(--accent2)",fontWeight:600}}>{fmt(f["Monto Total"])}</span>
-                </div>
-              ))}
-            </div>
-            <div style={{borderTop:"1px solid var(--border)",marginTop:10,paddingTop:10,display:"flex",justifyContent:"space-between"}}>
-              <span style={{fontWeight:700,color:"var(--text)"}}>TOTAL</span>
-              <span style={{fontFamily:"'DM Mono',monospace",fontWeight:700,fontSize:16,color:"var(--green)"}}>{fmt(total)}</span>
-            </div>
-          </div>
-          <div className="form-grid">
-            <div className="form-group">
-              <label>Fecha de Pago</label>
-              <input type="date" value={fechaPago} onChange={e=>setFechaPago(e.target.value)}/>
-            </div>
-            <div className="form-group">
-              <label>Medio de Pago</label>
-              <select value={medioPago} onChange={e=>setMedioPago(e.target.value)}>
-                {MEDIO_PAGO.map(m=><option key={m}>{m}</option>)}
-              </select>
-            </div>
-            {medioPago === "Transferencia" && (
-              <div className="form-group full">
-                <label>N° Transferencia</label>
-                <input placeholder="Número de operación" value={nTransfer} onChange={e=>setNTransfer(e.target.value)}/>
-              </div>
-            )}
-            <div className="form-group full">
-              <label>Comprobante (imagen o PDF)</label>
-              <div style={{border:"2px dashed var(--border)",borderRadius:8,padding:20,textAlign:"center",cursor:"pointer"}}
-                onClick={()=>document.getElementById("fileInput").click()}>
-                <input id="fileInput" type="file" accept="image/*,.pdf" style={{display:"none"}} onChange={handleFile}/>
-                {nombreArchivo
-                  ? <div><div style={{fontSize:24,marginBottom:6}}>📎</div><div style={{fontSize:13,color:"var(--green)",fontWeight:600}}>{nombreArchivo}</div></div>
-                  : <div><div style={{fontSize:24,marginBottom:6}}>☁️</div><div style={{fontSize:13,color:"var(--text3)"}}>Click para subir comprobante</div></div>
-                }
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="modal-footer">
-          <button className="btn btn-secondary" onClick={onClose}>Cancelar</button>
-          <button className="btn btn-primary" onClick={()=>onConfirmar({fechaPago,medioPago,nTransfer,comprobante})} disabled={saving}>
-            {saving ? "Procesando..." : `✓ Confirmar Pago ${fmt(total)}`}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function TablaFacturas({ facturas, onEdit, onPagar, onPagarMultiple }) {
-  const [q, setQ] = React.useState("");
-  const [filtroEstado, setFiltroEstado] = React.useState("");
-  const [filtroPago, setFiltroPago] = React.useState("");
-  const [pag, setPag] = React.useState(1);
-  const [seleccionadas, setSeleccionadas] = React.useState([]);
-  const [showPagoModal, setShowPagoModal] = React.useState(false);
-  const PER_PAGE = 15;
-
-  const filtered = facturas.filter(f => {
-    const txt = q.toLowerCase();
-    const match = !txt ||
-      (f["Razon Social"]||"").toLowerCase().includes(txt) ||
-      (f["RUT Proveedor"]||"").toLowerCase().includes(txt) ||
-      String(f["Factura"]||"").includes(txt) ||
-      (f["Descripcion"]||"").toLowerCase().includes(txt);
-    const matchEstado = !filtroEstado || (f["Estado"]||"") === filtroEstado;
-    const matchPago = !filtroPago || (f["Forma Pago"]||"") === filtroPago;
-    return match && matchEstado && matchPago;
-  });
-
-  const total = filtered.length;
-  const pages = Math.ceil(total / PER_PAGE);
-  const slice = filtered.slice((pag-1)*PER_PAGE, pag*PER_PAGE);
-  React.useEffect(()=>setPag(1),[q,filtroEstado,filtroPago]);
-
-  function toggleSeleccion(f) {
-    setSeleccionadas(prev => {
-      const existe = prev.find(x=>x._rowIndex===f._rowIndex);
-      return existe ? prev.filter(x=>x._rowIndex!==f._rowIndex) : [...prev, f];
-    });
-  }
-  const estaSeleccionada = f => seleccionadas.some(x=>x._rowIndex===f._rowIndex);
-  const totalSeleccionado = seleccionadas.reduce((a,f)=>a+(parseFloat(f["Monto Total"])||0),0);
-
-  return (
-    <div className="table-wrap">
-      <div className="table-toolbar">
-        <div className="search-box">
-          <span style={{color:"var(--text3)"}}>🔍</span>
-          <input placeholder="Buscar proveedor, RUT, N° factura..." value={q} onChange={e=>setQ(e.target.value)}/>
-        </div>
-        <select className="filter" value={filtroEstado} onChange={e=>setFiltroEstado(e.target.value)}>
-          <option value="">Todos los estados</option>
-          {ESTADOS.map(s=><option key={s}>{s}</option>)}
-        </select>
-        <select className="filter" value={filtroPago} onChange={e=>setFiltroPago(e.target.value)}>
-          <option value="">Todos los medios</option>
-          {MEDIO_PAGO.map(s=><option key={s}>{s}</option>)}
-        </select>
-        <div style={{marginLeft:"auto",display:"flex",alignItems:"center",gap:10}}>
-          <span style={{fontSize:12,color:"var(--text3)"}}>{total} registros</span>
-          <button className="btn btn-success btn-sm" onClick={()=>exportarExcel(filtered,"facturas_incom.csv")}>📥 Exportar</button>
-        </div>
-      </div>
-      {seleccionadas.length > 0 && (
-        <div style={{background:"var(--accent)",padding:"12px 20px",display:"flex",alignItems:"center",gap:16}}>
-          <span style={{fontSize:13,fontWeight:700,color:"white"}}>{seleccionadas.length} seleccionadas</span>
-          <span style={{fontSize:13,fontFamily:"'DM Mono',monospace",color:"rgba(255,255,255,0.9)"}}>{fmt(totalSeleccionado)}</span>
-          <button className="btn" style={{background:"white",color:"var(--accent)",marginLeft:"auto"}} onClick={()=>setShowPagoModal(true)}>💳 Registrar Pago</button>
-          <button className="btn" style={{background:"rgba(255,255,255,0.2)",color:"white",border:"1px solid rgba(255,255,255,0.3)"}} onClick={()=>setSeleccionadas([])}>✕</button>
-        </div>
-      )}
-      <div style={{overflowX:"auto"}}>
-        <table>
-          <thead>
-            <tr>
-              <th style={{width:40}}>☑</th>
-              <th>Proveedor</th><th>Factura</th><th>Emisión</th><th>Vencimiento</th>
-              <th>Estado</th><th>Monto Total</th><th>CECO</th><th>Usuario</th><th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {slice.length === 0 && (
-              <tr><td colSpan={10}><div className="empty-state"><div className="empty-icon">📄</div><div>No se encontraron facturas</div></div></td></tr>
-            )}
-            {slice.map((f,i)=>(
-              <tr key={i} style={{background:estaSeleccionada(f)?"rgba(59,130,246,0.08)":""}}>
-                <td style={{textAlign:"center"}}>
-                  {f["Estado"]!=="Pagado" && (
-                    <input type="checkbox" checked={estaSeleccionada(f)} onChange={()=>toggleSeleccion(f)} style={{cursor:"pointer",width:16,height:16,accentColor:"var(--accent)"}}/>
-                  )}
-                </td>
-                <td style={{maxWidth:160}}>
-                  <div style={{fontWeight:600,color:"var(--text)",fontSize:13,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{f["Razon Social"]||"—"}</div>
-                  <div style={{fontSize:11,color:"var(--text3)",fontFamily:"'DM Mono',monospace"}}>{f["RUT Proveedor"]||""}</div>
-                </td>
-                <td className="mono">{f["Factura"]||"—"}</td>
-                <td style={{whiteSpace:"nowrap"}}>{fmtDate(f["Fecha Emision"])}</td>
-                <td style={{whiteSpace:"nowrap"}}>{fmtDate(f["Vencimiento"])}</td>
-                <td>{estadoBadge(f)}</td>
-                <td className="mono" style={{color:"var(--text)",fontWeight:600}}>{fmt(f["Monto Total"])}</td>
-                <td style={{fontSize:12}}>{f["Area/Centro costo"]||"—"}</td>
-                <td>{f["Usuario"]||"—"}</td>
-                <td>
-                  <div style={{display:"flex",gap:4}}>
-                    <button className="btn btn-secondary btn-sm" onClick={()=>onEdit(f)}>✏️</button>
-                    {f["Estado"]!=="Pagado" && <button className="btn btn-success btn-sm" onClick={()=>onPagar(f)}>✓</button>}
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      {pages > 1 && (
-        <div className="pagination">
-          <button className="btn btn-secondary btn-sm" onClick={()=>setPag(p=>Math.max(1,p-1))} disabled={pag===1}>‹</button>
-          <span>Página {pag} de {pages}</span>
-          <button className="btn btn-secondary btn-sm" onClick={()=>setPag(p=>Math.min(pages,p+1))} disabled={pag===pages}>›</button>
-        </div>
-      )}
-      {showPagoModal && (
-        <ModalPagoMultiple
-          seleccionadas={seleccionadas}
-          onConfirmar={async(datos)=>{ await onPagarMultiple(seleccionadas,datos); setSeleccionadas([]); setShowPagoModal(false); }}
-          onClose={()=>setShowPagoModal(false)}
-          saving={false}
-        />
-      )}
-    </div>
-  );
-}
-
-function ResumenProveedores({ facturas }) {
-  const map = {};
-  facturas.forEach(f => {
-    const k = f["RUT Proveedor"]||"—";
-    if (!map[k]) map[k] = { nombre:f["Razon Social"]||k, total:0, pendiente:0, pagado:0, cnt:0 };
-    const m = parseFloat(f["Monto Total"])||0;
-    map[k].total += m; map[k].cnt++;
-    if (f["Estado"]==="Pagado") map[k].pagado += m; else map[k].pendiente += m;
-  });
-  const rows = Object.entries(map).sort((a,b)=>b[1].total-a[1].total);
-  return (
-    <div className="table-wrap">
-      <div style={{padding:"16px 20px",borderBottom:"1px solid var(--border)",fontWeight:700,fontSize:14}}>🏢 Resumen por Proveedor</div>
-      <div style={{overflowX:"auto"}}>
-        <table>
-          <thead><tr><th>RUT</th><th>Razón Social</th><th>Facturas</th><th>Total</th><th>Pendiente</th><th>Pagado</th></tr></thead>
-          <tbody>
-            {rows.map(([rut,v])=>(
-              <tr key={rut}>
-                <td className="mono">{rut}</td>
-                <td style={{fontWeight:600,color:"var(--text)"}}>{v.nombre}</td>
-                <td className="mono">{v.cnt}</td>
-                <td className="mono" style={{color:"var(--accent2)",fontWeight:700}}>{fmt(v.total)}</td>
-                <td className="mono" style={{color:"var(--red)"}}>{fmt(v.pendiente)}</td>
-                <td className="mono" style={{color:"var(--green)"}}>{fmt(v.pagado)}</td>
-              </tr>
-            ))}
-            {rows.length===0&&<tr><td colSpan={6}><div className="empty-state"><div className="empty-icon">🏢</div><div>Sin datos</div></div></td></tr>}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
-
-function ResumenCECO({ facturas }) {
-  const map = {};
-  facturas.forEach(f => {
-    const k = f["Area/Centro costo"]||"Sin CECO";
-    if (!map[k]) map[k] = { total:0, pendiente:0, pagado:0, cnt:0 };
-    const m = parseFloat(f["Monto Total"])||0;
-    map[k].total += m; map[k].cnt++;
-    if (f["Estado"]==="Pagado") map[k].pagado += m; else map[k].pendiente += m;
-  });
-  const rows = Object.entries(map).sort((a,b)=>b[1].total-a[1].total);
-  const maxTotal = rows[0]?.[1]?.total || 1;
-  return (
-    <div className="table-wrap">
-      <div style={{padding:"16px 20px",borderBottom:"1px solid var(--border)",fontWeight:700,fontSize:14}}>📊 Resumen por Centro de Costo</div>
-      <div style={{padding:"20px"}}>
-        {rows.map(([k,v])=>(
-          <div key={k} style={{marginBottom:20}}>
-            <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}>
-              <span style={{fontSize:13,fontWeight:600,color:"var(--text)"}}>{k}</span>
-              <span style={{fontSize:13,fontFamily:"'DM Mono',monospace",color:"var(--accent2)",fontWeight:700}}>{fmt(v.total)}</span>
-            </div>
-            <div style={{height:8,background:"var(--bg3)",borderRadius:4,overflow:"hidden",marginBottom:4}}>
-              <div style={{height:"100%",width:`${(v.total/maxTotal)*100}%`,background:"linear-gradient(90deg,var(--accent),var(--accent2))",borderRadius:4}}/>
-            </div>
-            <div style={{display:"flex",gap:16,fontSize:11,color:"var(--text3)"}}>
-              <span>{v.cnt} facturas</span>
-              <span style={{color:"var(--red)"}}>Pendiente: {fmt(v.pendiente)}</span>
-              <span style={{color:"var(--green)"}}>Pagado: {fmt(v.pagado)}</span>
-            </div>
-          </div>
-        ))}
-        {rows.length===0&&<div className="empty-state"><div className="empty-icon">📊</div><div>Sin datos</div></div>}
-      </div>
-    </div>
-  );
-}
-
-function App() {
-  const [vista, setVista] = React.useState("dashboard");
-  const [facturas, setFacturas] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
-  const [saving, setSaving] = React.useState(false);
-  const [msg, setMsg] = React.useState(null);
-  const [showForm, setShowForm] = React.useState(false);
-  const [editando, setEditando] = React.useState(null);
-
-  async function cargar() {
-    setLoading(true);
-    try {
-      const r = await fetch(`${APPS_SCRIPT_URL}?action=getFacturas`);
-      const d = await r.json();
-      if (d.success) setFacturas(d.data || []);
-      else throw new Error(d.error);
-    } catch(e) {
-      setMsg({ type:"error", text:"Error al cargar datos: " + e.message });
-    }
-    setLoading(false);
-  }
-
-  React.useEffect(()=>{ cargar(); },[]);
-
-  function showMsg(type, text) {
-    setMsg({type,text});
-    setTimeout(()=>setMsg(null), 4000);
-  }
-
-  async function handleSave(datos) {
-    setSaving(true);
-    try {
-      const action = editando ? "updateFactura" : "addFactura";
-      const payload = editando ? { ...datos, _rowIndex: editando._rowIndex } : datos;
-      const r = await fetch(APPS_SCRIPT_URL, { method:"POST", body:JSON.stringify({ action, ...payload }) });
-      const d = await r.json();
-      if (d.success) { showMsg("success", editando ? "Factura actualizada ✓" : "Factura agregada ✓"); setShowForm(false); setEditando(null); cargar(); }
-      else throw new Error(d.error);
-    } catch(e) { showMsg("error","Error: "+e.message); }
-    setSaving(false);
-  }
-
-  async function handlePagar(f) {
-    if (!confirm(`¿Marcar como PAGADA la factura ${f["Factura"]} de ${f["Razon Social"]}?`)) return;
-    setSaving(true);
-    try {
-      const hoy = new Date().toISOString().split("T")[0];
-      const r = await fetch(APPS_SCRIPT_URL, { method:"POST", body:JSON.stringify({ action:"updateFactura", ...f, "Estado":"Pagado", "Fecha Pago":hoy, _rowIndex:f._rowIndex }) });
-      const d = await r.json();
-      if (d.success) { showMsg("success","Factura marcada como pagada ✓"); cargar(); }
-      else throw new Error(d.error);
-    } catch(e) { showMsg("error","Error: "+e.message); }
-    setSaving(false);
-  }
-
-  async function handlePagarMultiple(seleccionadas, datos) {
-    setSaving(true);
-    try {
-      let linkComprobante = "";
-      if (datos.comprobante) {
-        const rDrive = await fetch(APPS_SCRIPT_URL, { method:"POST", body:JSON.stringify({ action:"subirComprobante", base64:datos.comprobante.base64, nombre:datos.comprobante.nombre, tipo:datos.comprobante.tipo, folderId:"1bLyoGEtgHh10YVlKyBm9_lt18hCaplsw" }) });
-        const dDrive = await rDrive.json();
-        if (dDrive.success) linkComprobante = dDrive.url;
-      }
-      for (const f of seleccionadas) {
-        await fetch(APPS_SCRIPT_URL, { method:"POST", body:JSON.stringify({ action:"updateFactura", ...f, "Estado":"Pagado", "Fecha Pago":datos.fechaPago, "Forma Pago":datos.medioPago, "N° Transferencia":datos.nTransfer, "Comprobante":linkComprobante, _rowIndex:f._rowIndex }) });
-      }
-      showMsg("success",`✓ ${seleccionadas.length} facturas marcadas como pagadas`);
-      cargar();
-    } catch(e) { showMsg("error","Error: "+e.message); }
-    setSaving(false);
-  }
-
-  return (
-    <div className="app">
-      <div className="sidebar">
-        <div className="logo">
-          <div className="logo-title">INCOM</div>
-          <div className="logo-sub">Control de Facturas</div>
-        </div>
-        <nav className="nav">
-          {NAV_ITEMS.map(n=>(
-            <div key={n.id} className={`nav-item${vista===n.id?" active":""}`} onClick={()=>setVista(n.id)}>
-              <span className="nav-icon">{n.icon}</span>{n.label}
-            </div>
-          ))}
-        </nav>
-        <div style={{padding:"16px 20px",borderTop:"1px solid var(--border)"}}>
-          <button className="btn btn-secondary" style={{width:"100%",justifyContent:"center"}} onClick={cargar}>🔄 Actualizar</button>
-        </div>
-      </div>
-      <div className="main">
-        {msg && (
-          <div className={`alert ${msg.type==="error"?"alert-red":"alert-green"}`} style={{position:"fixed",top:20,right:20,zIndex:300,minWidth:280}}>
-            {msg.text}
-          </div>
-        )}
-        <div className="page-header">
-          <div>
-            <div className="page-title">{NAV_ITEMS.find(n=>n.id===vista)?.icon} {NAV_ITEMS.find(n=>n.id===vista)?.label}</div>
-            <div className="page-sub">{facturas.length} facturas cargadas</div>
-          </div>
-          {vista==="facturas" && (
-            <button className="btn btn-primary" onClick={()=>{setEditando(null);setShowForm(true);}}>+ Nueva Factura</button>
-          )}
-        </div>
-        {loading ? (
-          <div className="loader"><div className="spinner"/><span>Cargando datos desde Google Sheets...</span></div>
-        ) : (
-          <>
-            {vista==="dashboard" && <Dashboard facturas={facturas}/>}
-            {vista==="facturas" && <TablaFacturas facturas={facturas} onEdit={f=>{setEditando(f);setShowForm(true);}} onPagar={handlePagar} onPagarMultiple={handlePagarMultiple}/>}
-            {vista==="proveedores" && <ResumenProveedores facturas={facturas}/>}
-            {vista==="ceco" && <ResumenCECO facturas={facturas}/>}
-          </>
-        )}
-      </div>
-      {showForm && (
-        <FacturaForm inicial={editando} onSave={handleSave} onClose={()=>{setShowForm(false);setEditando(null);}} loading={saving}/>
-      )}
-    </div>
-  );
-}
-
-ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+});
 </script>
 </body>
 </html>
